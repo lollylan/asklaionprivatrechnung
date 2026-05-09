@@ -1,0 +1,2459 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privatrechnung – Hausärztliche Liquidation nach GOÄ</title>
+    <style>
+        /* ====================================================
+           Grundeinstellungen
+           ==================================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --color-primary: #1a3a5c;
+            --color-secondary: #466b8a;
+            --color-accent: #8b6f47;
+            --color-bg: #f5f3ee;
+            --color-surface: #ffffff;
+            --color-text: #2c2c2c;
+            --color-text-light: #6b6b6b;
+            --color-border: #d4cfc4;
+            --color-border-light: #e8e4dc;
+            --color-success: #4a7c59;
+            --color-danger: #a04848;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.10);
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-serif: 'EB Garamond', Georgia, 'Times New Roman', serif;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* ====================================================
+           Layout
+           ==================================================== */
+        .app {
+            display: grid;
+            grid-template-columns: 540px 1fr;
+            min-height: 100vh;
+            gap: 0;
+        }
+
+        .sidebar {
+            background: var(--color-surface);
+            border-right: 1px solid var(--color-border);
+            padding: 28px 28px 120px;
+            overflow-y: auto;
+            max-height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+
+        .preview-wrapper {
+            padding: 36px;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        /* ====================================================
+           Sidebar – Headings & Sections
+           ==================================================== */
+        .app-title {
+            font-family: var(--font-serif);
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 4px;
+            letter-spacing: -0.01em;
+        }
+
+        .app-subtitle {
+            font-size: 13px;
+            color: var(--color-text-light);
+            margin-bottom: 24px;
+        }
+
+        .section {
+            margin-bottom: 22px;
+            border: 1px solid var(--color-border-light);
+            border-radius: 8px;
+            background: var(--color-surface);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 12px 16px;
+            background: linear-gradient(to bottom, #fafaf7, #f3f0e9);
+            border-bottom: 1px solid var(--color-border-light);
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-primary);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .section-header:hover {
+            background: linear-gradient(to bottom, #f5f2ec, #ebe7dd);
+        }
+
+        .section-header .toggle-icon {
+            transition: transform 0.2s;
+            font-size: 14px;
+        }
+
+        .section.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .section-body {
+            padding: 16px;
+        }
+
+        .section.collapsed .section-body {
+            display: none;
+        }
+
+        /* ====================================================
+           Form Elements
+           ==================================================== */
+        .form-row {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .form-row.two-cols {
+            grid-template-columns: 1fr 2fr;
+        }
+
+        .form-row.three-cols {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--color-text-light);
+            margin-bottom: 4px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        input[type="email"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--color-border);
+            border-radius: 5px;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--color-text);
+            background: var(--color-surface);
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 0 3px rgba(70, 107, 138, 0.12);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        /* ====================================================
+           Buttons
+           ==================================================== */
+        button {
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 8px 14px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-secondary);
+        }
+
+        .btn-secondary {
+            background: var(--color-surface);
+            color: var(--color-primary);
+            border: 1px solid var(--color-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-bg);
+            border-color: var(--color-secondary);
+        }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--color-danger);
+            border: 1px solid var(--color-border);
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .btn-danger:hover {
+            background: var(--color-danger);
+            color: white;
+            border-color: var(--color-danger);
+        }
+
+        .btn-add-day {
+            width: 100%;
+            padding: 10px;
+            background: var(--color-surface);
+            color: var(--color-primary);
+            border: 1.5px dashed var(--color-border);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .btn-add-day:hover {
+            border-color: var(--color-secondary);
+            background: rgba(70, 107, 138, 0.04);
+        }
+
+        /* ====================================================
+           Tag-Karten (Days)
+           ==================================================== */
+        .day-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border-light);
+            border-radius: 8px;
+            margin-bottom: 14px;
+            overflow: hidden;
+        }
+
+        .day-card-header {
+            padding: 12px 14px;
+            background: linear-gradient(to bottom, #fafaf7, #f3f0e9);
+            border-bottom: 1px solid var(--color-border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .day-date-input {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .day-card-body {
+            padding: 12px 14px;
+        }
+
+        .codes-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4px;
+        }
+
+        .code-row {
+            display: grid;
+            grid-template-columns: 28px 1fr 90px;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 5px;
+            transition: background 0.1s;
+        }
+
+        .code-row:hover {
+            background: var(--color-bg);
+        }
+
+        .code-row.checked {
+            background: rgba(70, 107, 138, 0.05);
+        }
+
+        .code-row input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: var(--color-primary);
+        }
+
+        .code-label {
+            font-size: 12.5px;
+            cursor: pointer;
+            user-select: none;
+            line-height: 1.35;
+        }
+
+        .code-label .code-num {
+            font-weight: 600;
+            color: var(--color-primary);
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            margin-right: 6px;
+        }
+
+        .code-label .code-desc {
+            color: var(--color-text-light);
+            font-size: 12px;
+        }
+
+        .factor-select {
+            font-size: 12px;
+            padding: 4px 6px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+        }
+
+        .code-row:not(.checked) .factor-select {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .code-group-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text-light);
+            margin: 12px 0 4px;
+            padding: 0 8px;
+        }
+
+        .code-group-title:first-child {
+            margin-top: 0;
+        }
+
+        /* ====================================================
+           Action Bar (fixed bottom)
+           ==================================================== */
+        .action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 540px;
+            padding: 14px 28px;
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .action-bar button {
+            flex: 1;
+        }
+
+        /* ====================================================
+           Rechnungs-Vorschau (A4)
+           ==================================================== */
+        .invoice {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: var(--shadow-lg);
+            padding: 22mm 22mm 25mm;
+            font-family: var(--font-serif);
+            font-size: 11pt;
+            line-height: 1.45;
+            color: #1a1a1a;
+            position: relative;
+        }
+
+        .letterhead {
+            border-bottom: 2px solid var(--color-primary);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .letterhead-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
+        }
+
+        .doctor-name {
+            font-family: var(--font-serif);
+            font-size: 22pt;
+            font-weight: 600;
+            color: var(--color-primary);
+            letter-spacing: 0.01em;
+            line-height: 1.1;
+        }
+
+        .doctor-title {
+            font-size: 10pt;
+            color: var(--color-text-light);
+            margin-top: 2px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .practice-contact {
+            text-align: right;
+            font-size: 9.5pt;
+            font-family: var(--font-sans);
+            color: var(--color-text-light);
+            line-height: 1.6;
+        }
+
+        .practice-contact strong {
+            color: var(--color-text);
+            font-weight: 500;
+        }
+
+        .address-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 28px;
+        }
+
+        .sender-line {
+            font-size: 8.5pt;
+            color: var(--color-text-light);
+            border-bottom: 0.5px solid var(--color-border);
+            padding-bottom: 3px;
+            margin-bottom: 8px;
+            font-family: var(--font-sans);
+        }
+
+        .recipient-address {
+            font-size: 11pt;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+
+        .recipient-address .anrede {
+            margin-bottom: 1px;
+        }
+
+        .invoice-meta {
+            text-align: right;
+            font-size: 10pt;
+            font-family: var(--font-sans);
+        }
+
+        .invoice-meta-row {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 12px;
+            justify-content: end;
+            margin-bottom: 2px;
+        }
+
+        .invoice-meta-row .label {
+            color: var(--color-text-light);
+        }
+
+        .invoice-meta-row .value {
+            font-weight: 500;
+        }
+
+        .invoice-title {
+            font-family: var(--font-serif);
+            font-size: 18pt;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 18px;
+            letter-spacing: 0.01em;
+        }
+
+        .salutation {
+            margin-bottom: 12px;
+        }
+
+        .intro-text {
+            margin-bottom: 16px;
+        }
+
+        .diagnosis-block {
+            margin-bottom: 16px;
+            padding: 10px 14px;
+            background: rgba(70, 107, 138, 0.04);
+            border-left: 3px solid var(--color-secondary);
+            font-size: 10.5pt;
+        }
+
+        .diagnosis-block .label {
+            font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text-light);
+            margin-bottom: 2px;
+            font-family: var(--font-sans);
+        }
+
+        /* ====================================================
+           Leistungstabelle
+           ==================================================== */
+        .services-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0 20px;
+            font-size: 10pt;
+        }
+
+        .services-table thead th {
+            border-bottom: 1.5px solid var(--color-primary);
+            padding: 8px 6px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--color-primary);
+            font-family: var(--font-sans);
+        }
+
+        .services-table tbody td {
+            padding: 6px 6px;
+            border-bottom: 0.5px solid var(--color-border-light);
+            vertical-align: top;
+            font-family: var(--font-sans);
+            font-size: 9.5pt;
+        }
+
+        .services-table .col-date { width: 28mm; white-space: nowrap; font-variant-numeric: tabular-nums; }
+        .services-table .col-code { width: 14mm; font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+        .services-table .col-desc { font-family: var(--font-serif); font-size: 10pt; }
+        .services-table .col-factor { width: 14mm; text-align: right; font-family: 'JetBrains Mono', monospace; }
+        .services-table .col-single { width: 22mm; text-align: right; font-family: 'JetBrains Mono', monospace; }
+        .services-table .col-amount { width: 24mm; text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+
+        .services-table tfoot td {
+            padding: 10px 6px;
+            border-top: 1.5px solid var(--color-primary);
+            font-weight: 600;
+            font-size: 11pt;
+        }
+
+        .services-table tfoot .total-label {
+            text-align: right;
+            font-family: var(--font-sans);
+            text-transform: uppercase;
+            font-size: 10pt;
+            letter-spacing: 0.04em;
+            color: var(--color-primary);
+        }
+
+        .services-table tfoot .total-amount {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--color-primary);
+            font-size: 12pt;
+        }
+
+        .empty-services {
+            padding: 30px;
+            text-align: center;
+            color: var(--color-text-light);
+            font-style: italic;
+        }
+
+        /* ====================================================
+           Zahlungsinformationen
+           ==================================================== */
+        .payment-block {
+            margin-top: 24px;
+            padding: 14px 16px;
+            background: rgba(70, 107, 138, 0.04);
+            border-radius: 4px;
+            font-size: 10.5pt;
+        }
+
+        .payment-block .due-date {
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .bank-details {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 0.5px solid var(--color-border);
+            font-family: var(--font-sans);
+            font-size: 9.5pt;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 4px 16px;
+        }
+
+        .bank-details .label {
+            color: var(--color-text-light);
+        }
+
+        .closing {
+            margin-top: 24px;
+        }
+
+        .signature-line {
+            margin-top: 30px;
+            font-style: italic;
+        }
+
+        /* ====================================================
+           Footer
+           ==================================================== */
+        .invoice-footer {
+            position: absolute;
+            bottom: 12mm;
+            left: 22mm;
+            right: 22mm;
+            border-top: 0.5px solid var(--color-border);
+            padding-top: 8px;
+            font-family: var(--font-sans);
+            font-size: 8pt;
+            color: var(--color-text-light);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .invoice-footer .footer-col strong {
+            display: block;
+            color: var(--color-text);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        /* ====================================================
+           Sitzungsblöcke (mehrere Besuche pro Tag)
+           ==================================================== */
+        .session-block {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px dashed var(--color-border-light);
+        }
+
+        .session-block:first-child {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+
+        .session-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .session-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-secondary);
+            flex-shrink: 0;
+        }
+
+        .session-time-input {
+            flex: 0 0 110px !important;
+            padding: 5px 8px !important;
+            font-size: 12px !important;
+        }
+
+        .session-spacer {
+            flex: 1;
+        }
+
+        .btn-add-session {
+            width: 100%;
+            margin-top: 14px;
+            padding: 8px;
+            background: transparent;
+            color: var(--color-secondary);
+            border: 1px dashed var(--color-border);
+            font-size: 12.5px;
+        }
+
+        .btn-add-session:hover {
+            border-color: var(--color-secondary);
+            background: rgba(70, 107, 138, 0.04);
+        }
+
+        /* ====================================================
+           Konflikt-Warnungen
+           ==================================================== */
+        .conflict-banner {
+            margin: 10px 0 0;
+            padding: 10px 12px;
+            background: #fdf3e7;
+            border-left: 3px solid #d4823a;
+            border-radius: 4px;
+            font-size: 12.5px;
+            color: #6b4220;
+            line-height: 1.45;
+        }
+
+        .conflict-banner strong {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 3px;
+            color: #a05a18;
+        }
+
+        .conflict-banner ul {
+            margin: 4px 0 0 16px;
+            padding: 0;
+        }
+
+        .conflict-banner li {
+            margin-bottom: 2px;
+        }
+
+        .code-row.conflict {
+            background: #fdf3e7;
+            box-shadow: inset 2px 0 0 #d4823a;
+        }
+
+        .code-row.conflict .code-num {
+            color: #a05a18;
+        }
+
+        .invoice-warning {
+            margin-bottom: 18px;
+            padding: 10px 14px;
+            background: #fdf3e7;
+            border-left: 3px solid #d4823a;
+            border-radius: 4px;
+            font-family: var(--font-sans);
+            font-size: 10pt;
+            color: #6b4220;
+        }
+
+        .invoice-warning strong {
+            color: #a05a18;
+        }
+
+        /* ====================================================
+           App-Footer (Impressum / Datenschutz / Disclaimer)
+           ==================================================== */
+        .app-footer {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            padding: 8px 16px;
+            font-size: 11px;
+            color: var(--color-text-light);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(6px);
+            border: 1px solid var(--color-border-light);
+            border-right: none;
+            border-bottom: none;
+            border-top-left-radius: 8px;
+            z-index: 50;
+            display: flex;
+            gap: 14px;
+            box-shadow: -2px -2px 8px rgba(0, 0, 0, 0.03);
+        }
+
+        .app-footer a {
+            color: var(--color-text-light);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .app-footer a:hover {
+            color: var(--color-primary);
+            text-decoration: underline;
+        }
+
+        .app-footer .separator {
+            color: var(--color-border);
+        }
+
+        /* ====================================================
+           Modal-Dialoge
+           ==================================================== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(20, 30, 45, 0.55);
+            backdrop-filter: blur(2px);
+            z-index: 1000;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 5vh 20px;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--color-surface);
+            border-radius: 10px;
+            max-width: 760px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            animation: modalIn 0.18s ease-out;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 18px 26px;
+            background: linear-gradient(to bottom, #fafaf7, #f3f0e9);
+            border-bottom: 1px solid var(--color-border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .modal-header h2 {
+            font-family: var(--font-serif);
+            font-size: 20px;
+            color: var(--color-primary);
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--color-text-light);
+            padding: 0 6px;
+            line-height: 1;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+
+        .modal-close:hover {
+            color: var(--color-danger);
+            background: var(--color-bg);
+        }
+
+        .modal-body {
+            padding: 22px 26px 28px;
+            font-size: 13.5px;
+            line-height: 1.6;
+            color: var(--color-text);
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-body h3 {
+            font-family: var(--font-serif);
+            font-size: 15px;
+            color: var(--color-primary);
+            font-weight: 600;
+            margin: 18px 0 6px;
+        }
+
+        .modal-body h3:first-child,
+        .modal-body .modal-disclaimer-banner + h3 {
+            margin-top: 0;
+        }
+
+        .modal-body p {
+            margin-bottom: 10px;
+        }
+
+        .modal-body ul {
+            margin: 6px 0 12px 22px;
+        }
+
+        .modal-body li {
+            margin-bottom: 3px;
+        }
+
+        .modal-body strong {
+            color: var(--color-primary);
+        }
+
+        .modal-body a {
+            color: var(--color-secondary);
+        }
+
+        .modal-body small {
+            font-size: 11.5px;
+            color: var(--color-text-light);
+        }
+
+        .modal-disclaimer-banner {
+            background: #fdf3e7;
+            border-left: 3px solid #d4823a;
+            padding: 12px 14px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            font-size: 12.5px;
+            color: #6b4220;
+            line-height: 1.5;
+        }
+
+        .modal-disclaimer-banner strong {
+            color: #a05a18;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* ====================================================
+           Print
+           ==================================================== */
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .sidebar,
+            .action-bar,
+            .invoice-warning,
+            .app-footer,
+            .modal-overlay,
+            .toast {
+                display: none !important;
+            }
+            .app {
+                display: block;
+            }
+            .preview-wrapper {
+                padding: 0;
+                overflow: visible;
+                max-height: none;
+            }
+            .invoice {
+                box-shadow: none;
+                margin: 0;
+                width: auto;
+                min-height: 0;
+                padding: 18mm 18mm 18mm;
+            }
+            /* Sauber umbrechen */
+            .services-table tr,
+            .payment-block,
+            .closing,
+            .signature-line,
+            .diagnosis-block,
+            .day-card,
+            .session-block,
+            .conflict-banner {
+                page-break-inside: avoid;
+            }
+            .services-table thead {
+                display: table-header-group; /* Tabellenkopf auf jeder Seite wiederholen */
+            }
+        }
+
+        /* ====================================================
+           Notification Toast
+           ==================================================== */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 12px 18px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.25s;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ====================================================
+           Smaller Screens
+           ==================================================== */
+        @media (max-width: 1200px) {
+            .app {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                position: static;
+                max-height: none;
+                border-right: none;
+                border-bottom: 1px solid var(--color-border);
+            }
+            .action-bar {
+                position: static;
+                width: 100%;
+            }
+            .preview-wrapper {
+                max-height: none;
+                padding: 20px;
+            }
+            .invoice {
+                width: 100%;
+                min-height: auto;
+                padding: 30px 24px;
+            }
+            .invoice-footer {
+                position: static;
+                margin-top: 30px;
+            }
+            .app-footer {
+                position: static;
+                width: 100%;
+                justify-content: center;
+                border-radius: 0;
+                border: none;
+                border-top: 1px solid var(--color-border-light);
+                box-shadow: none;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- =========================================
+             SIDEBAR – Eingaben
+             ========================================= -->
+        <aside class="sidebar">
+            <div class="app-title">Privatrechnung</div>
+            <div class="app-subtitle">Hausärztliche Liquidation nach GOÄ</div>
+
+            <!-- Praxis-Stammdaten -->
+            <div class="section collapsed" id="section-praxis">
+                <div class="section-header" onclick="toggleSection('section-praxis')">
+                    <span>Briefkopf & Praxis-Daten (einmalig)</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div>
+                            <label>Briefkopf-Name (groß)</label>
+                            <input type="text" id="praxis-name" placeholder="Mandy Mustermann">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>Untertitel / Funktion</label>
+                            <input type="text" id="praxis-untertitel" placeholder="Fachärztin für Allgemeinmedizin">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>Straße und Hausnummer</label>
+                            <input type="text" id="praxis-strasse" placeholder="Musterstraße 12">
+                        </div>
+                    </div>
+                    <div class="form-row two-cols">
+                        <div>
+                            <label>PLZ</label>
+                            <input type="text" id="praxis-plz" placeholder="12345">
+                        </div>
+                        <div>
+                            <label>Ort</label>
+                            <input type="text" id="praxis-ort" placeholder="Musterstadt">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>Telefon</label>
+                            <input type="text" id="praxis-tel" placeholder="0931 / ...">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>Fax</label>
+                            <input type="text" id="praxis-fax" placeholder="0931 / ...">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>E-Mail</label>
+                            <input type="email" id="praxis-email" placeholder="...">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>Steuernummer</label>
+                            <input type="text" id="praxis-steuer" placeholder="optional">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>Schlussformel</label>
+                            <input type="text" id="praxis-schluss" placeholder="Mit freundlichen Grüßen">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>Unterschrift / Signatur-Zeile</label>
+                            <input type="text" id="praxis-signatur" placeholder="Mandy Mustermann">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bankverbindung -->
+            <div class="section collapsed" id="section-bank">
+                <div class="section-header" onclick="toggleSection('section-bank')">
+                    <span>Bankverbindung (einmalig)</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div>
+                            <label>Kontoinhaber</label>
+                            <input type="text" id="bank-inhaber" placeholder="Mandy Mustermann">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>Bank</label>
+                            <input type="text" id="bank-name" placeholder="...">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>IBAN</label>
+                            <input type="text" id="bank-iban" placeholder="DE__ ____ ____ ____ ____ __">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>BIC</label>
+                            <input type="text" id="bank-bic" placeholder="...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patient -->
+            <div class="section" id="section-patient">
+                <div class="section-header" onclick="toggleSection('section-patient')">
+                    <span>Patient</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div>
+                            <label>Anrede</label>
+                            <select id="pat-anrede">
+                                <option value="Herrn">Herrn</option>
+                                <option value="Frau">Frau</option>
+                                <option value="">– keine –</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row two-cols">
+                        <div>
+                            <label>Titel</label>
+                            <input type="text" id="pat-titel" placeholder="z. B. Dr.">
+                        </div>
+                        <div>
+                            <label>Vor- und Nachname</label>
+                            <input type="text" id="pat-name" placeholder="Max Mustermann">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>Straße und Hausnummer</label>
+                            <input type="text" id="pat-strasse" placeholder="Musterstraße 1">
+                        </div>
+                    </div>
+                    <div class="form-row two-cols">
+                        <div>
+                            <label>PLZ</label>
+                            <input type="text" id="pat-plz" placeholder="97070">
+                        </div>
+                        <div>
+                            <label>Ort</label>
+                            <input type="text" id="pat-ort" placeholder="Würzburg">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>Geburtsdatum (optional)</label>
+                            <input type="date" id="pat-geburtsdatum">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rechnung -->
+            <div class="section" id="section-invoice">
+                <div class="section-header" onclick="toggleSection('section-invoice')">
+                    <span>Rechnungsdetails</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div>
+                            <label>Rechnungsnummer</label>
+                            <input type="text" id="inv-nummer" placeholder="2026-001">
+                        </div>
+                    </div>
+                    <div class="form-row two-cols">
+                        <div>
+                            <label>Rechnungsdatum</label>
+                            <input type="date" id="inv-datum">
+                        </div>
+                        <div>
+                            <label>Zahlbar bis</label>
+                            <input type="date" id="inv-zahlbar">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>Diagnose / Anlass (erscheint auf Rechnung)</label>
+                            <textarea id="inv-diagnose" placeholder="z. B. Hausbesuch bei akutem Infekt"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Behandlungstage -->
+            <div class="section" id="section-days">
+                <div class="section-header" onclick="toggleSection('section-days')">
+                    <span>Behandlungstage</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-body">
+                    <div id="days-container"></div>
+                    <button class="btn-add-day" onclick="addDay()">+ Tag hinzufügen</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- =========================================
+             ACTION BAR
+             ========================================= -->
+        <div class="action-bar">
+            <button class="btn-secondary" onclick="resetAll()">Neu</button>
+            <button class="btn-secondary" onclick="saveData()">Speichern</button>
+            <button class="btn-primary" onclick="exportPDF()" title="Tipp: Im Druckdialog unter „Weitere Einstellungen" die Option „Kopf- und Fußzeilen" deaktivieren, damit Datum und Dateipfad nicht auf der Rechnung erscheinen.">PDF exportieren</button>
+        </div>
+
+        <!-- =========================================
+             RECHNUNGS-VORSCHAU
+             ========================================= -->
+        <div class="preview-wrapper">
+            <div class="invoice" id="invoice">
+                <!-- Briefkopf -->
+                <header class="letterhead">
+                    <div class="letterhead-top">
+                        <div>
+                            <div class="doctor-name" id="prev-doc-name">Mandy Mustermann</div>
+                            <div class="doctor-title" id="prev-doc-untertitel">Fachärztin für Allgemeinmedizin</div>
+                        </div>
+                        <div class="practice-contact">
+                            <span id="prev-tel"></span>
+                            <span id="prev-fax"></span>
+                            <span id="prev-email"></span>
+                            <span id="prev-steuer"></span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Adressblock -->
+                <div class="address-block">
+                    <div>
+                        <div class="sender-line" id="prev-sender-line">Mandy Mustermann &middot; Musterstraße 12 &middot; 12345 Musterstadt</div>
+                        <div class="recipient-address" id="prev-recipient">
+                            <span style="color: var(--color-text-light); font-style: italic;">Empfänger eingeben…</span>
+                        </div>
+                    </div>
+                    <div class="invoice-meta">
+                        <div class="invoice-meta-row">
+                            <span class="label">Rechnungs-Nr.</span>
+                            <span class="value" id="prev-nummer">–</span>
+                        </div>
+                        <div class="invoice-meta-row">
+                            <span class="label">Rechnungsdatum</span>
+                            <span class="value" id="prev-datum">–</span>
+                        </div>
+                        <div class="invoice-meta-row" id="prev-geburt-row" style="display:none;">
+                            <span class="label">geb. am</span>
+                            <span class="value" id="prev-geburt">–</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h1 class="invoice-title">Liquidation</h1>
+
+                <div id="prev-conflicts" class="invoice-warning" style="display:none;"></div>
+
+                <p class="salutation" id="prev-anrede">Sehr geehrte Damen und Herren,</p>
+                <p class="intro-text">für die nachfolgend aufgeführten ärztlichen Leistungen erlaube ich mir, gemäß der Gebührenordnung für Ärzte (GOÄ) folgende Rechnung zu stellen:</p>
+
+                <div class="diagnosis-block" id="prev-diagnose-block" style="display:none;">
+                    <div class="label">Diagnose / Anlass</div>
+                    <div id="prev-diagnose"></div>
+                </div>
+
+                <table class="services-table">
+                    <thead>
+                        <tr>
+                            <th class="col-date">Datum</th>
+                            <th class="col-code">Ziffer</th>
+                            <th class="col-desc">Bezeichnung</th>
+                            <th class="col-factor">Faktor</th>
+                            <th class="col-single">Einzelbetrag</th>
+                            <th class="col-amount">Betrag</th>
+                        </tr>
+                    </thead>
+                    <tbody id="services-tbody">
+                        <tr><td colspan="6" class="empty-services">Noch keine Leistungen erfasst.</td></tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" class="total-label">Gesamtbetrag</td>
+                            <td class="total-amount" id="prev-total">0,00 €</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <div class="payment-block">
+                    <div>
+                        Ich bitte um Überweisung des Rechnungsbetrages
+                        <span class="due-date" id="prev-zahlbar">bis zum [Datum]</span>
+                        auf das unten genannte Konto unter Angabe der Rechnungsnummer als Verwendungszweck.
+                    </div>
+                    <div class="bank-details" id="prev-bank">
+                        <span class="label">Kontoinhaber:</span><span id="prev-bank-inhaber">[Kontoinhaber]</span>
+                        <span class="label">IBAN:</span><span id="prev-bank-iban">[IBAN folgt]</span>
+                        <span class="label">BIC:</span><span id="prev-bank-bic">[BIC folgt]</span>
+                        <span class="label">Bank:</span><span id="prev-bank-name">[Bank folgt]</span>
+                    </div>
+                </div>
+
+                <p class="closing" id="prev-closing">Mit freundlichen Grüßen</p>
+                <p class="signature-line" id="prev-signature">Mandy Mustermann</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         APP-FOOTER (rechtliche Hinweise)
+         ========================================= -->
+    <footer class="app-footer">
+        <a onclick="openModal('modal-disclaimer')">Disclaimer</a>
+        <span class="separator">·</span>
+        <a onclick="openModal('modal-impressum')">Impressum</a>
+        <span class="separator">·</span>
+        <a onclick="openModal('modal-datenschutz')">Datenschutz</a>
+    </footer>
+
+    <!-- =========================================
+         MODAL: Disclaimer
+         ========================================= -->
+    <div class="modal-overlay" id="modal-disclaimer" onclick="closeModalIfOverlay(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Disclaimer / Haftungsausschluss</h2>
+                <button class="modal-close" onclick="closeModal('modal-disclaimer')" aria-label="Schließen">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-disclaimer-banner">
+                    <strong>Hinweis: Technische Demonstration</strong>
+                    Diese Anwendung ist eine technische Demonstration zu Forschungs- und Bildungszwecken
+                    und veranschaulicht moderne Webtechnologien zur strukturierten Erfassung von
+                    Privatrechnungen nach der Gebührenordnung für Ärzte (GOÄ). Sie ist
+                    <strong>nicht für den produktiven Einsatz an realen Patientinnen und Patienten</strong>
+                    bestimmt.
+                </div>
+
+                <h3>Zweck</h3>
+                <p>
+                    Diese Software dient ausschließlich der Demonstration einer
+                    GOÄ-konformen Rechnungsstellung als clientseitige Single-Page-Anwendung
+                    sowie der Veranschaulichung von Konflikt-Detektion bei abrechnungstechnisch
+                    sich ausschließenden Ziffern. Die Anwendung ersetzt keine zertifizierte
+                    Praxisverwaltungs- oder Abrechnungssoftware.
+                </p>
+
+                <h3>Keine Gewähr für Richtigkeit</h3>
+                <p>
+                    Sämtliche hinterlegten GOÄ-Ziffern, Einzelbeträge, Steigerungsfaktoren und
+                    Konfliktregeln wurden mit Sorgfalt erstellt; ein Anspruch auf
+                    <strong>Richtigkeit, Vollständigkeit oder Aktualität</strong> wird jedoch
+                    ausdrücklich nicht erhoben. Die amtliche Gebührenordnung für Ärzte und ihre
+                    jeweils gültige Fassung sind allein maßgeblich.
+                </p>
+
+                <h3>Keine Beratung</h3>
+                <p>
+                    Die Anwendung stellt weder eine abrechnungstechnische, steuerliche noch
+                    rechtliche Beratung dar und ersetzt nicht die Prüfung durch eine
+                    fachkundige Person (z. B. ärztliche Verrechnungsstelle, Steuerberater,
+                    Rechtsanwalt).
+                </p>
+
+                <h3>Verwendung im Praxisbetrieb</h3>
+                <p>
+                    Vor jedem Einsatz im realen Praxisbetrieb sind sämtliche Beträge,
+                    Faktoren, Leistungslegenden und Konfliktregeln anhand der aktuellen
+                    amtlichen GOÄ und der einschlägigen Rechtsprechung zu verifizieren.
+                    Die Verantwortung für eine korrekte Rechnungsstellung verbleibt
+                    vollumfänglich bei der nutzenden Person.
+                </p>
+
+                <h3>Haftungsausschluss</h3>
+                <p>
+                    Eine Haftung für Schäden – gleich welcher Art –, die mittelbar oder
+                    unmittelbar aus der Nutzung dieser Demonstrations-Software entstehen,
+                    wird im gesetzlich zulässigen Rahmen ausgeschlossen. Dies gilt insbesondere
+                    für entgangene Gewinne, fehlerhafte Abrechnungen, Forderungsausfälle oder
+                    Beanstandungen durch Kostenträger und Patienten.
+                </p>
+
+                <p style="margin-top: 18px;">
+                    <small>
+                        Stand: Mai 2026. Diese Demonstration steht unter dem Vorbehalt
+                        jederzeitiger Änderung ohne Vorankündigung.
+                    </small>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         MODAL: Impressum
+         ========================================= -->
+    <div class="modal-overlay" id="modal-impressum" onclick="closeModalIfOverlay(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Impressum</h2>
+                <button class="modal-close" onclick="closeModal('modal-impressum')" aria-label="Schließen">×</button>
+            </div>
+            <div class="modal-body">
+                <p><small>Pflichtangaben gemäß § 5 DDG und § 18 MStV</small></p>
+
+                <h3>Diensteanbieter</h3>
+                <p>
+                    <strong>Dr. med. Florian Rasche</strong><br>
+                    Facharzt für Allgemeinmedizin<br>
+                    Huttenstraße 6<br>
+                    97072 Würzburg<br>
+                    Deutschland
+                </p>
+
+                <h3>Kontakt</h3>
+                <p>
+                    Telefon: 0931 / 72525<br>
+                    Fax: 0931 / 76264<br>
+                    E-Mail: <a href="mailto:praxis@dr-rasche.de">praxis@dr-rasche.de</a>
+                </p>
+
+                <h3>Berufsbezeichnung und berufsrechtliche Regelungen</h3>
+                <p>
+                    <strong>Berufsbezeichnung:</strong> Arzt (verliehen in der Bundesrepublik Deutschland)<br>
+                    <strong>Facharzt für:</strong> Allgemeinmedizin<br>
+                    <strong>Zusatzbezeichnungen:</strong> Palliativmedizin · Medizin für Menschen
+                    mit intellektueller Beeinträchtigung oder mehrfacher Behinderung
+                </p>
+                <p>
+                    <strong>Zuständige Kammer:</strong><br>
+                    Bayerische Landesärztekammer, Mühlbaurstraße 16, 81677 München<br>
+                    <a href="https://www.blaek.de" target="_blank" rel="noopener">www.blaek.de</a>
+                </p>
+                <p>
+                    <strong>Kassenärztliche Vereinigung:</strong><br>
+                    Kassenärztliche Vereinigung Bayerns (KVB)<br>
+                    Elsenheimerstraße 39, 80687 München<br>
+                    <a href="https://www.kvb.de" target="_blank" rel="noopener">www.kvb.de</a>
+                </p>
+                <p>
+                    <strong>Zuständige Aufsichtsbehörde:</strong><br>
+                    Regierung von Unterfranken, Peterplatz 9, 97070 Würzburg
+                </p>
+                <p>
+                    <strong>Berufsrechtliche Regelungen:</strong> Berufsordnung für die Ärzte
+                    Bayerns, Heilberufe-Kammergesetz (HKaG), Bundesärzteordnung (BÄO),
+                    Approbationsordnung für Ärzte, Gebührenordnung für Ärzte (GOÄ).
+                    Einsehbar über die Website der
+                    <a href="https://www.blaek.de" target="_blank" rel="noopener">Bayerischen Landesärztekammer</a>.
+                </p>
+
+                <h3>Umsatzsteuer</h3>
+                <p>
+                    Eine Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG wurde nicht
+                    erteilt. Ärztliche Heilbehandlungen i. S. d. § 4 Nr. 14 UStG sind
+                    von der Umsatzsteuer befreit.
+                </p>
+
+                <h3>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
+                <p>
+                    Dr. med. Florian Rasche · Huttenstraße 6 · 97072 Würzburg
+                </p>
+
+                <h3>Hinweis zu Inhalten</h3>
+                <p>
+                    Die Inhalte dieser Anwendung wurden mit Sorgfalt erstellt. Für die
+                    Richtigkeit, Vollständigkeit und Aktualität – insbesondere der
+                    GOÄ-Ziffern und Beträge – wird keine Gewähr übernommen. Es handelt sich
+                    um eine technische Demonstration; siehe ergänzend den
+                    <a onclick="closeModal('modal-impressum'); openModal('modal-disclaimer');">Disclaimer</a>.
+                </p>
+
+                <h3>Verbraucherstreitbeilegung</h3>
+                <p>
+                    Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren
+                    vor einer Verbraucherschlichtungsstelle teilzunehmen.
+                </p>
+
+                <h3>Urheberrecht</h3>
+                <p>
+                    Die durch den Seitenbetreiber erstellten Inhalte dieser Anwendung
+                    unterliegen dem deutschen Urheberrecht. Vervielfältigung, Bearbeitung
+                    und Verbreitung außerhalb der Grenzen des Urheberrechts bedürfen der
+                    schriftlichen Zustimmung.
+                </p>
+
+                <p style="margin-top: 18px;"><small>Stand: Mai 2026</small></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         MODAL: Datenschutz
+         ========================================= -->
+    <div class="modal-overlay" id="modal-datenschutz" onclick="closeModalIfOverlay(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Datenschutzerklärung</h2>
+                <button class="modal-close" onclick="closeModal('modal-datenschutz')" aria-label="Schließen">×</button>
+            </div>
+            <div class="modal-body">
+                <p><small>DSGVO · Transparenzhinweise zu dieser Anwendung</small></p>
+
+                <p>
+                    Diese Anwendung („Privatrechnung") ist eine rein <strong>clientseitige
+                    Single-Page-Web-App</strong>. Sämtliche Eingaben (Praxisstammdaten,
+                    Bankverbindung, Patienten- und Leistungsdaten) werden ausschließlich
+                    lokal in Ihrem Browser verarbeitet. <strong>Es findet keine Übertragung
+                    personenbezogener Daten an einen Server des Anbieters statt.</strong>
+                </p>
+
+                <h3>1. Verantwortlicher</h3>
+                <p>
+                    <strong>Dr. med. Florian Rasche</strong><br>
+                    Huttenstraße 6 · 97072 Würzburg · Deutschland<br>
+                    Telefon: 0931 / 72525<br>
+                    E-Mail: <a href="mailto:praxis@dr-rasche.de">praxis@dr-rasche.de</a>
+                </p>
+
+                <h3>2. Verarbeitungsumfang</h3>
+                <p>
+                    Die Anwendung verarbeitet die von Ihnen eingegebenen Daten ausschließlich
+                    zum Zweck der Darstellung und des Drucks einer Privatrechnung im Browser.
+                    Eine Übermittlung dieser Daten an Dritte oder einen externen Server
+                    findet <strong>nicht</strong> statt. Es werden:
+                </p>
+                <ul>
+                    <li>keine Tracking- oder Analyse-Cookies gesetzt,</li>
+                    <li>keine Marketing-Pixel oder Werbe-Skripte geladen,</li>
+                    <li>keine externen Schriftarten, CDNs oder Drittanbieter-Skripte
+                        nachgeladen,</li>
+                    <li>keine IP-Adressen, Browser-Kennungen oder Standortdaten erhoben
+                        oder gespeichert.</li>
+                </ul>
+
+                <h3>3. Lokale Speicherung (Local Storage)</h3>
+                <p>
+                    Auf Wunsch (Schaltfläche <em>„Speichern"</em>) werden ausschließlich die
+                    <strong>Praxis-Stammdaten und die Bankverbindung</strong> im
+                    <em>Local Storage</em> Ihres Browsers abgelegt, damit Sie diese Daten
+                    bei späterem Aufruf nicht erneut eingeben müssen. Diese Information
+                    verlässt Ihren Browser nicht und kann jederzeit über die
+                    Browser-Einstellungen oder die Entwicklerwerkzeuge wieder gelöscht werden.
+                </p>
+                <p>
+                    Patienten- und Leistungsdaten werden <strong>nicht persistiert</strong>
+                    und sind nach dem Schließen oder Neuladen des Browser-Tabs unwiderruflich
+                    entfernt.
+                </p>
+
+                <h3>4. PDF-Export / Druck</h3>
+                <p>
+                    Der PDF-Export erfolgt über den <strong>integrierten Druckdialog Ihres
+                    Browsers</strong>. Hierbei wird ausschließlich Ihr lokal installiertes
+                    Betriebssystem bzw. Ihr Browser verwendet; eine Datenübermittlung an
+                    den Anbieter dieser Anwendung erfolgt nicht. Die datenschutzrechtliche
+                    Verantwortung für den anschließenden Umgang mit dem erzeugten PDF
+                    (Speicherung, Versand, Archivierung) liegt bei Ihnen.
+                </p>
+
+                <h3>5. Rechtsgrundlagen</h3>
+                <p>
+                    Soweit überhaupt eine Verarbeitung personenbezogener Daten im Sinne der
+                    DSGVO stattfindet, beruht diese auf:
+                </p>
+                <ul>
+                    <li>Art. 6 Abs. 1 lit. b DSGVO (Anbahnung/Durchführung des
+                        Behandlungsvertrags – nur soweit Sie als Praxisinhaber Patientendaten
+                        zur Rechnungsstellung eingeben),</li>
+                    <li>Art. 6 Abs. 1 lit. c DSGVO i. V. m. § 12 GOÄ und § 14 UStG
+                        (Erfüllung gesetzlicher Pflichten zur Rechnungsstellung),</li>
+                    <li>Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am komfortablen
+                        Wiederladen Ihrer Praxis-Stammdaten via Local Storage).</li>
+                </ul>
+
+                <h3>6. Empfänger und Drittlandübermittlung</h3>
+                <p>
+                    Es findet <strong>keine Datenübermittlung</strong> an Empfänger
+                    außerhalb Ihres Browsers und insbesondere <strong>keine Übermittlung
+                    in Drittländer</strong> statt.
+                </p>
+
+                <h3>7. Speicherdauer</h3>
+                <p>
+                    Daten im flüchtigen Browser-Speicher werden mit dem Schließen des Tabs
+                    bzw. dem Neuladen der Seite gelöscht. Im Local Storage abgelegte
+                    Praxis-Stammdaten bleiben bis zu Ihrer manuellen Löschung erhalten.
+                </p>
+
+                <h3>8. Ihre Rechte</h3>
+                <p>
+                    Ihnen stehen – soweit personenbezogene Daten verarbeitet werden – die
+                    Rechte auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16),
+                    Löschung (Art. 17), Einschränkung (Art. 18), Datenübertragbarkeit
+                    (Art. 20) sowie ein Widerspruchsrecht (Art. 21) zu. Da diese
+                    Anwendung Ihre Daten nicht serverseitig speichert, können Sie diese
+                    Rechte vollumfänglich durch Löschen der Browser-Daten selbst ausüben.
+                </p>
+
+                <h3>9. Beschwerderecht</h3>
+                <p>
+                    Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu
+                    beschweren – etwa beim
+                    <strong>Bayerischen Landesbeauftragten für den Datenschutz</strong>,
+                    Wagmüllerstraße 18, 80538 München.
+                </p>
+
+                <p style="margin-top: 18px;"><small>Stand: Mai 2026</small></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ====================================================
+        // GOÄ-Ziffernkatalog
+        // baseAmount = Einfachsatz in Euro
+        // group = Anzeigegruppe in der Sidebar
+        // factorOptions = mögliche Faktoren im Dropdown
+        // defaultFactor = vorbelegter Faktor
+        // ====================================================
+        const GOAE = [
+            // Beratungen / Untersuchungen
+            { code: '1',  desc: 'Beratung – auch mittels Fernsprecher',
+              baseAmount: 4.66,  defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
+            { code: '3',  desc: 'Eingehende, das gewöhnliche Maß übersteigende Beratung – auch mittels Fernsprecher',
+              baseAmount: 8.74,  defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
+            { code: '4',  desc: 'Erhebung der Fremdanamnese und/oder Unterweisung der Bezugsperson(en)',
+              baseAmount: 6.99,  defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
+            { code: '5',  desc: 'Symptombezogene Untersuchung',
+              baseAmount: 4.66,  defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
+            { code: '6',  desc: 'Vollständige körperliche Untersuchung mindestens eines Organsystems',
+              baseAmount: 15.15, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
+            { code: '7',  desc: 'Vollständige körperliche Untersuchung mehrerer Organsysteme oder eines umschriebenen Krankheitsherdes',
+              baseAmount: 17.49, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
+            { code: '8',  desc: 'Untersuchung zur Erhebung des Ganzkörperstatus mit Erstellung eines schriftlichen Behandlungsplans',
+              baseAmount: 13.99, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
+            { code: '15', desc: 'Einleitung und Koordination flankierender therapeutischer und sozialer Maßnahmen während der ambulanten Behandlung',
+              baseAmount: 10.72, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
+            { code: '34', desc: 'Erörterung (mindestens 20 Min.) der Auswirkungen einer nachhaltig lebensverändernden oder lebensbedrohenden Erkrankung auf die Lebensgestaltung – ggf. einschließlich Anleitung zur Krankheitsverarbeitung oder zur Verhaltensänderung',
+              baseAmount: 17.49, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
+
+            // Besuche
+            { code: '50', desc: 'Besuch einschließlich Beratung und symptombezogener Untersuchung',
+              baseAmount: 15.15, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Besuche' },
+            { code: '51', desc: 'Besuch eines weiteren Kranken in derselben häuslichen Gemeinschaft / demselben Pflegeheim',
+              baseAmount: 8.74,  defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Besuche' },
+
+            // Berichte
+            { code: '70', desc: 'Kurze Bescheinigung oder kurzes Zeugnis, kurzer Befundbericht',
+              baseAmount: 2.33,  defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Berichte & Bescheinigungen' },
+            { code: '75', desc: 'Ausführlicher schriftlicher Krankheits- und Befundbericht',
+              baseAmount: 7.58,  defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Berichte & Bescheinigungen' },
+
+            // Apparative / Sachleistungen (Faktor 1,8)
+            { code: '250', desc: 'Blutentnahme mittels Kanüle, ggf. einschließlich Probenröhrchen',
+              baseAmount: 2.40,  defaultFactor: 1.8, factorOptions: [1.0, 1.3, 1.8, 2.5], group: 'Apparativ / Sachleistungen' },
+            { code: '602', desc: 'Pulsoximetrische Untersuchung(en) zur Bestimmung der Sauerstoffsättigung – ggf. einschließlich Pulsfrequenzmessung',
+              baseAmount: 6.41,  defaultFactor: 1.8, factorOptions: [1.0, 1.3, 1.8, 2.5], group: 'Apparativ / Sachleistungen' },
+
+            // Zuschläge (Faktor immer 1,0)
+            { code: 'A', desc: 'Zuschlag bei Aufsuchen außerhalb der Sprechstunde – Werktag (Mo–Fr 6–8 / 20–22 Uhr) sowie Sa, So, Feiertag (8–20 Uhr)',
+              baseAmount: 5.83,  defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
+            { code: 'B', desc: 'Zuschlag bei Inanspruchnahme zwischen 22 und 6 Uhr (Nacht)',
+              baseAmount: 17.49, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
+            { code: 'C', desc: 'Zuschlag bei Inanspruchnahme an Sa, So, Feiertag zwischen 6–8 Uhr und 20–22 Uhr',
+              baseAmount: 9.91,  defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
+            { code: 'D', desc: 'Zuschlag bei sofortiger Inanspruchnahme aufgrund eines Notfalls außerhalb der Sprechstunde',
+              baseAmount: 26.23, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
+            { code: 'E', desc: 'Zuschlag zu den Besuchsleistungen (Werktag 8–20 Uhr außerhalb der Sprechstunde)',
+              baseAmount: 11.66, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
+            { code: 'F', desc: 'Zuschlag zu den Besuchsleistungen bei Inanspruchnahme zwischen 22 und 6 Uhr',
+              baseAmount: 26.23, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
+
+            // Wegegelder
+            { code: '71', desc: 'Wegegeld bei Besuch innerhalb des Praxisortes – bis 2 km (Tag)',
+              baseAmount: 3.58,  defaultFactor: 1.0, factorOptions: [1.0], group: 'Wegegelder' },
+            { code: '72', desc: 'Wegegeld bei Besuch innerhalb des Praxisortes – mehr als 2 bis 5 km (Tag)',
+              baseAmount: 6.65,  defaultFactor: 1.0, factorOptions: [1.0], group: 'Wegegelder' }
+        ];
+
+        // ====================================================
+        // Konflikt-Regeln (gegenseitig ausschließende Ziffern pro Tag)
+        // ====================================================
+        // Mutuelle Ausschluss-Gruppen: max. eine Ziffer pro Gruppe pro Tag
+        const CONFLICT_GROUPS = [
+            {
+                id: 'beratung',
+                codes: ['1', '3', '34'],
+                message: 'Nrn. 1, 3 und 34 sind Beratungs- bzw. Erörterungsleistungen und schließen sich pro Sitzung gegenseitig aus (Nr. 34 ist laut GOÄ-Bestimmung nicht neben Nrn. 1, 3, 4 berechenbar).'
+            },
+            {
+                id: 'untersuchung',
+                codes: ['5', '6', '7', '8'],
+                message: 'Die Untersuchungsziffern 5, 6, 7 und 8 schließen sich gegenseitig aus – pro Sitzung darf nur eine abgerechnet werden.'
+            },
+            {
+                id: 'besuch',
+                codes: ['50', '51'],
+                message: 'Nr. 50 ist der Erstbesuch, Nr. 51 nur für weitere Patienten in derselben häuslichen Gemeinschaft – beim selben Patienten am selben Tag schließen sie sich aus.'
+            },
+            {
+                id: 'zuschlag-beratung',
+                codes: ['A', 'B', 'C', 'D'],
+                message: 'Die Zeit-Zuschläge A, B, C und D zu Beratungen/Untersuchungen schließen sich gegenseitig aus.'
+            },
+            {
+                id: 'zuschlag-besuch',
+                codes: ['E', 'F'],
+                message: 'Die Besuchs-Zuschläge E und F schließen sich gegenseitig aus.'
+            },
+            {
+                id: 'wegegeld',
+                codes: ['71', '72'],
+                message: 'Pro Besuch kann nur ein Wegegeld (Entfernungspauschale) abgerechnet werden.'
+            }
+        ];
+
+        // Implizite Ausschlüsse: Eine Ziffer enthält bereits andere Leistungen
+        // Wenn die "trigger"-Ziffer angesetzt ist, dürfen die "excludes"-Ziffern nicht zusätzlich abgerechnet werden
+        const IMPLICIT_CONFLICTS = [
+            {
+                trigger: '50',
+                excludes: ['1', '5'],
+                message: 'Nr. 50 (Besuch) enthält laut Leistungslegende bereits Beratung und symptombezogene Untersuchung – Nrn. 1 und 5 sind daneben nicht zusätzlich berechenbar.'
+            },
+            {
+                trigger: '51',
+                excludes: ['1', '5'],
+                message: 'Nr. 51 enthält laut Leistungslegende bereits Beratung und symptombezogene Untersuchung – Nrn. 1 und 5 sind daneben nicht zusätzlich berechenbar.'
+            }
+        ];
+
+        // ====================================================
+        // State
+        // ====================================================
+        // Datenmodell:
+        //   day = { id, date, sessions: [ session ] }
+        //   session = { id, time: 'HH:MM', services: { code: { factor } } }
+        // Konflikt-Prüfung erfolgt PRO SITZUNG, nicht über den ganzen Tag.
+        let days = [];
+        let dayCounter = 0;
+        let sessionCounter = 0;
+
+        function createSession(time = '', services = {}) {
+            return {
+                id: 'session-' + (++sessionCounter),
+                time,
+                services
+            };
+        }
+
+        // ====================================================
+        // Toast
+        // ====================================================
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 1800);
+        }
+
+        // ====================================================
+        // Section Toggle
+        // ====================================================
+        function toggleSection(id) {
+            document.getElementById(id).classList.toggle('collapsed');
+        }
+
+        // ====================================================
+        // Modal-Handling (Disclaimer / Impressum / Datenschutz)
+        // ====================================================
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            if (!modal) return;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (!modal) return;
+            modal.classList.remove('active');
+            // Falls noch ein anderes Modal offen ist, Body-Scroll gesperrt lassen
+            const stillOpen = document.querySelector('.modal-overlay.active');
+            if (!stillOpen) document.body.style.overflow = '';
+        }
+
+        function closeModalIfOverlay(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                closeModal(event.target.id);
+            }
+        }
+
+        // ESC schließt das oberste Modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const open = document.querySelectorAll('.modal-overlay.active');
+                if (open.length > 0) {
+                    closeModal(open[open.length - 1].id);
+                }
+            }
+        });
+
+        // ====================================================
+        // Konflikt-Detektion (pro Sitzung)
+        // ====================================================
+        // Liefert: { messages: [...], conflictedCodes: Set<string> }
+        function getConflictsForSession(session) {
+            const messages = [];
+            const conflictedCodes = new Set();
+            const activeCodes = Object.keys(session.services);
+            if (activeCodes.length === 0) return { messages, conflictedCodes };
+
+            // 1) Mutuelle Ausschluss-Gruppen
+            CONFLICT_GROUPS.forEach(group => {
+                const hits = group.codes.filter(c => activeCodes.includes(c));
+                if (hits.length > 1) {
+                    messages.push({
+                        type: 'group',
+                        codes: hits,
+                        text: group.message + ' (Aktiv: Nr. ' + hits.join(', Nr. ') + ')'
+                    });
+                    hits.forEach(c => conflictedCodes.add(c));
+                }
+            });
+
+            // 2) Implizite Ausschlüsse
+            IMPLICIT_CONFLICTS.forEach(rule => {
+                if (activeCodes.includes(rule.trigger)) {
+                    const conflictedHere = rule.excludes.filter(c => activeCodes.includes(c));
+                    if (conflictedHere.length > 0) {
+                        messages.push({
+                            type: 'implicit',
+                            codes: [rule.trigger, ...conflictedHere],
+                            text: rule.message + ' (Konflikt: Nr. ' + rule.trigger + ' + Nr. ' + conflictedHere.join(', Nr. ') + ')'
+                        });
+                        conflictedHere.forEach(c => conflictedCodes.add(c));
+                        conflictedCodes.add(rule.trigger);
+                    }
+                }
+            });
+
+            return { messages, conflictedCodes };
+        }
+
+        // ====================================================
+        // Day & Session Management
+        // ====================================================
+        function addDay(prefilledDate = '') {
+            const id = 'day-' + (++dayCounter);
+            const today = new Date().toISOString().split('T')[0];
+            const day = {
+                id,
+                date: prefilledDate || today,
+                sessions: [createSession()]
+            };
+            days.push(day);
+            renderDays();
+            renderInvoice();
+        }
+
+        function removeDay(id) {
+            days = days.filter(d => d.id !== id);
+            renderDays();
+            renderInvoice();
+        }
+
+        function updateDayDate(id, date) {
+            const day = days.find(d => d.id === id);
+            if (day) {
+                day.date = date;
+                renderInvoice();
+            }
+        }
+
+        function addSession(dayId) {
+            const day = days.find(d => d.id === dayId);
+            if (!day) return;
+            day.sessions.push(createSession());
+            renderDays();
+            renderInvoice();
+        }
+
+        function removeSession(dayId, sessionId) {
+            const day = days.find(d => d.id === dayId);
+            if (!day) return;
+            if (day.sessions.length <= 1) return; // mindestens eine Sitzung muss bleiben
+            day.sessions = day.sessions.filter(s => s.id !== sessionId);
+            renderDays();
+            renderInvoice();
+        }
+
+        function updateSessionTime(dayId, sessionId, time) {
+            const day = days.find(d => d.id === dayId);
+            if (!day) return;
+            const session = day.sessions.find(s => s.id === sessionId);
+            if (session) {
+                session.time = time;
+                renderDays();
+                renderInvoice();
+            }
+        }
+
+        function toggleService(dayId, sessionId, code) {
+            const day = days.find(d => d.id === dayId);
+            if (!day) return;
+            const session = day.sessions.find(s => s.id === sessionId);
+            if (!session) return;
+            const wasActive = !!session.services[code];
+            if (wasActive) {
+                delete session.services[code];
+            } else {
+                const goae = GOAE.find(g => g.code === code);
+                session.services[code] = { factor: goae.defaultFactor };
+            }
+            renderDays();
+            renderInvoice();
+
+            // Bei Aktivierung: prüfen, ob ein neuer Konflikt entstanden ist
+            if (!wasActive) {
+                const { conflictedCodes } = getConflictsForSession(session);
+                if (conflictedCodes.has(code)) {
+                    showToast('⚠ Ziffer ' + code + ' steht im Konflikt mit anderen Leistungen dieser Sitzung');
+                }
+            }
+        }
+
+        function updateFactor(dayId, sessionId, code, factor) {
+            const day = days.find(d => d.id === dayId);
+            if (!day) return;
+            const session = day.sessions.find(s => s.id === sessionId);
+            if (session && session.services[code]) {
+                session.services[code].factor = parseFloat(factor);
+                renderInvoice();
+            }
+        }
+
+        // ====================================================
+        // Render Sidebar Days
+        // ====================================================
+        function renderDays() {
+            const container = document.getElementById('days-container');
+            if (days.length === 0) {
+                container.innerHTML = '<p style="font-size:13px;color:var(--color-text-light);text-align:center;padding:12px 0;">Noch keine Behandlungstage.</p>';
+                return;
+            }
+
+            // Gruppiere die GOÄ-Codes nach group
+            const groups = {};
+            GOAE.forEach(g => {
+                if (!groups[g.group]) groups[g.group] = [];
+                groups[g.group].push(g);
+            });
+
+            container.innerHTML = days.map(day => {
+                const multipleSessions = day.sessions.length > 1;
+
+                const sessionsHtml = day.sessions.map((session, sIdx) => {
+                    const { messages, conflictedCodes } = getConflictsForSession(session);
+
+                    const codesHtml = Object.entries(groups).map(([grpName, items]) => `
+                        <div class="code-group-title">${grpName}</div>
+                        ${items.map(g => {
+                            const isChecked = !!session.services[g.code];
+                            const isConflicted = isChecked && conflictedCodes.has(g.code);
+                            const currentFactor = isChecked ? session.services[g.code].factor : g.defaultFactor;
+                            const factorOpts = g.factorOptions.map(f =>
+                                `<option value="${f}" ${f === currentFactor ? 'selected' : ''}>${formatFactor(f)}</option>`
+                            ).join('');
+                            const rowClasses = ['code-row'];
+                            if (isChecked) rowClasses.push('checked');
+                            if (isConflicted) rowClasses.push('conflict');
+                            return `
+                                <div class="${rowClasses.join(' ')}">
+                                    <input type="checkbox" id="${session.id}-${g.code}" ${isChecked ? 'checked' : ''}
+                                        onchange="toggleService('${day.id}', '${session.id}', '${g.code}')">
+                                    <label class="code-label" for="${session.id}-${g.code}">
+                                        <span class="code-num">${g.code}</span><span class="code-desc">${truncate(g.desc, 95)}</span>
+                                    </label>
+                                    <select class="factor-select" onchange="updateFactor('${day.id}', '${session.id}', '${g.code}', this.value)" ${isChecked ? '' : 'disabled'}>
+                                        ${factorOpts}
+                                    </select>
+                                </div>
+                            `;
+                        }).join('')}
+                    `).join('');
+
+                    const conflictBanner = messages.length > 0 ? `
+                        <div class="conflict-banner">
+                            <strong>${messages.length === 1 ? 'Hinweis zur Abrechnung' : 'Hinweise zur Abrechnung'}</strong>
+                            <ul>
+                                ${messages.map(m => `<li>${escapeHtml(m.text)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : '';
+
+                    const sessionLabel = multipleSessions ? `<span class="session-label">Besuch ${sIdx + 1}</span>` : '';
+                    const removeSessionBtn = multipleSessions
+                        ? `<button class="btn-danger" onclick="removeSession('${day.id}', '${session.id}')">Besuch entfernen</button>`
+                        : '';
+                    const timeInput = `<input type="time" class="session-time-input" value="${session.time || ''}"
+                        title="Uhrzeit (optional)"
+                        onchange="updateSessionTime('${day.id}', '${session.id}', this.value)">`;
+
+                    return `
+                        <div class="session-block">
+                            <div class="session-header">
+                                ${sessionLabel}
+                                ${timeInput}
+                                <span class="session-spacer"></span>
+                                ${removeSessionBtn}
+                            </div>
+                            <div class="codes-grid">
+                                ${codesHtml}
+                            </div>
+                            ${conflictBanner}
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="day-card">
+                        <div class="day-card-header">
+                            <input type="date" class="day-date-input" value="${day.date}"
+                                onchange="updateDayDate('${day.id}', this.value)">
+                            <button class="btn-danger" onclick="removeDay('${day.id}')">Tag entfernen</button>
+                        </div>
+                        <div class="day-card-body">
+                            ${sessionsHtml}
+                            <button class="btn-add-session" onclick="addSession('${day.id}')">+ Weiteren Besuch am gleichen Tag</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function truncate(str, n) {
+            return str.length > n ? str.substring(0, n - 1) + '…' : str;
+        }
+
+        function formatFactor(f) {
+            return f.toFixed(1).replace('.', ',') + '-fach';
+        }
+
+        // ====================================================
+        // Render Invoice Preview
+        // ====================================================
+        function renderInvoice() {
+            // Briefkopf: Name, Untertitel, Adresse
+            const docName = val('praxis-name') || 'Dr. med.';
+            const docUntertitel = val('praxis-untertitel');
+            const docStrasse = val('praxis-strasse');
+            const docPlz = val('praxis-plz');
+            const docOrt = val('praxis-ort');
+            const docPlzOrt = [docPlz, docOrt].filter(Boolean).join(' ');
+
+            document.getElementById('prev-doc-name').textContent = docName;
+            const untertitelEl = document.getElementById('prev-doc-untertitel');
+            untertitelEl.textContent = docUntertitel;
+            untertitelEl.style.display = docUntertitel ? '' : 'none';
+
+            // Praxiskontakt im Briefkopf rechts
+            const tel = val('praxis-tel');
+            const fax = val('praxis-fax');
+            const email = val('praxis-email');
+            const steuer = val('praxis-steuer');
+            document.getElementById('prev-tel').innerHTML = tel ? `Tel. ${escapeHtml(tel)}<br>` : '';
+            document.getElementById('prev-fax').innerHTML = fax ? `Fax ${escapeHtml(fax)}<br>` : '';
+            document.getElementById('prev-email').innerHTML = email ? `${escapeHtml(email)}<br>` : '';
+            document.getElementById('prev-steuer').innerHTML = steuer ? `<span style="font-size:8.5pt;">Steuer-Nr. ${escapeHtml(steuer)}</span>` : '';
+
+            // Sender-Line (Briefumschlag-Fenster)
+            const senderParts = [docName, docStrasse, docPlzOrt].filter(Boolean);
+            document.getElementById('prev-sender-line').textContent = senderParts.join(' · ');
+
+            // Schlussformel & Signatur
+            document.getElementById('prev-closing').textContent = val('praxis-schluss') || 'Mit freundlichen Grüßen';
+            document.getElementById('prev-signature').textContent = val('praxis-signatur') || docName;
+
+            // Empfänger-Adressblock
+            const anrede = val('pat-anrede');
+            const titel = val('pat-titel');
+            const name = val('pat-name');
+            const strasse = val('pat-strasse');
+            const plz = val('pat-plz');
+            const ort = val('pat-ort');
+            const geburt = val('pat-geburtsdatum');
+
+            const adresseLines = [];
+            if (anrede) adresseLines.push(anrede);
+            const titelName = [titel, name].filter(Boolean).join(' ').trim();
+            if (titelName) adresseLines.push(titelName);
+            if (strasse) adresseLines.push(strasse);
+            const plzOrt = [plz, ort].filter(Boolean).join(' ').trim();
+            if (plzOrt) adresseLines.push(plzOrt);
+
+            const recipient = document.getElementById('prev-recipient');
+            if (adresseLines.length === 0) {
+                recipient.innerHTML = '<span style="color: var(--color-text-light); font-style: italic;">Empfänger eingeben…</span>';
+            } else {
+                recipient.innerHTML = adresseLines.map(l => `<div>${escapeHtml(l)}</div>`).join('');
+            }
+
+            // Anrede-Zeile
+            let salutation = 'Sehr geehrte Damen und Herren,';
+            if (name) {
+                if (anrede === 'Herrn') salutation = `Sehr geehrter Herr ${titel ? titel + ' ' : ''}${getLastName(name)},`;
+                else if (anrede === 'Frau') salutation = `Sehr geehrte Frau ${titel ? titel + ' ' : ''}${getLastName(name)},`;
+            }
+            document.getElementById('prev-anrede').textContent = salutation;
+
+            // Geburtsdatum
+            if (geburt) {
+                document.getElementById('prev-geburt-row').style.display = 'grid';
+                document.getElementById('prev-geburt').textContent = formatDate(geburt);
+            } else {
+                document.getElementById('prev-geburt-row').style.display = 'none';
+            }
+
+            // Rechnungsmeta
+            document.getElementById('prev-nummer').textContent = val('inv-nummer') || '–';
+            const invDatum = val('inv-datum');
+            document.getElementById('prev-datum').textContent = invDatum ? formatDate(invDatum) : '–';
+
+            const zahlbar = val('inv-zahlbar');
+            document.getElementById('prev-zahlbar').textContent = zahlbar ? `bis zum ${formatDate(zahlbar)}` : 'bis zum [Datum]';
+
+            // Diagnose
+            const diagnose = val('inv-diagnose');
+            if (diagnose) {
+                document.getElementById('prev-diagnose-block').style.display = 'block';
+                document.getElementById('prev-diagnose').textContent = diagnose;
+            } else {
+                document.getElementById('prev-diagnose-block').style.display = 'none';
+            }
+
+            // Bankverbindung
+            const bankInhaber = val('bank-inhaber');
+            const bankIban = val('bank-iban');
+            const bankBic = val('bank-bic');
+            const bankName = val('bank-name');
+            document.getElementById('prev-bank-inhaber').textContent = bankInhaber || '[Kontoinhaber]';
+            document.getElementById('prev-bank-iban').textContent = bankIban || '[IBAN folgt]';
+            document.getElementById('prev-bank-bic').textContent = bankBic || '[BIC folgt]';
+            document.getElementById('prev-bank-name').textContent = bankName || '[Bank folgt]';
+
+            // Konflikt-Übersicht für alle Sitzungen
+            const allConflicts = [];
+            days.forEach(day => {
+                day.sessions.forEach((session, sIdx) => {
+                    const { messages } = getConflictsForSession(session);
+                    const sessionMarker = day.sessions.length > 1
+                        ? ` (Besuch ${sIdx + 1}${session.time ? ', ' + session.time + ' Uhr' : ''})`
+                        : '';
+                    messages.forEach(m => {
+                        allConflicts.push({
+                            date: day.date,
+                            marker: sessionMarker,
+                            text: m.text
+                        });
+                    });
+                });
+            });
+            const warnEl = document.getElementById('prev-conflicts');
+            if (allConflicts.length > 0) {
+                const list = allConflicts.map(c => {
+                    const dateLabel = c.date ? formatDate(c.date) : '';
+                    return `<li>${escapeHtml(dateLabel + c.marker)}${dateLabel ? ': ' : ''}${escapeHtml(c.text)}</li>`;
+                }).join('');
+                warnEl.innerHTML = `
+                    <strong>⚠ Hinweis: Mögliche Abrechnungs-Konflikte (nur zur Prüfung – nicht im Druck enthalten)</strong>
+                    <ul style="margin: 6px 0 0 18px; padding: 0;">${list}</ul>
+                `;
+                warnEl.style.display = 'block';
+            } else {
+                warnEl.style.display = 'none';
+                warnEl.innerHTML = '';
+            }
+
+            // Leistungstabelle
+            const tbody = document.getElementById('services-tbody');
+            const allRows = [];
+            // Tage nach Datum sortieren; pro Tag Sitzungen nach Uhrzeit (leere Uhrzeit zuerst)
+            const sortedDays = [...days].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+            let total = 0;
+            let lastSessionLabel = null;
+
+            sortedDays.forEach(day => {
+                const sortedSessions = [...day.sessions].sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+                const dayHasMultipleSessions = sortedSessions.length > 1;
+
+                sortedSessions.forEach(session => {
+                    const codesInOrder = GOAE.filter(g => session.services[g.code]);
+                    if (codesInOrder.length === 0) return;
+
+                    // Label-Logik: Datum + Uhrzeit (falls gesetzt oder mehrere Sitzungen)
+                    let sessionLabel = day.date ? formatDate(day.date) : '';
+                    if (session.time) {
+                        sessionLabel += (sessionLabel ? ' ' : '') + session.time;
+                    } else if (dayHasMultipleSessions) {
+                        // Mehrere Sitzungen, aber keine Uhrzeit für diese Sitzung
+                        sessionLabel += ' –';
+                    }
+
+                    codesInOrder.forEach((g, idx) => {
+                        const service = session.services[g.code];
+                        const factor = service.factor;
+                        const single = g.baseAmount * factor;
+                        const amount = single;
+                        total += amount;
+
+                        // Datum/Uhrzeit nur in der ersten Zeile einer Sitzung anzeigen
+                        const showLabel = idx === 0 && sessionLabel !== lastSessionLabel;
+                        const labelToShow = showLabel ? sessionLabel : '';
+                        if (showLabel) lastSessionLabel = sessionLabel;
+
+                        allRows.push(`
+                            <tr>
+                                <td class="col-date">${escapeHtml(labelToShow)}</td>
+                                <td class="col-code">${g.code}</td>
+                                <td class="col-desc">${escapeHtml(g.desc)}</td>
+                                <td class="col-factor">${factor.toFixed(1).replace('.', ',')}</td>
+                                <td class="col-single">${formatEuro(g.baseAmount)}</td>
+                                <td class="col-amount">${formatEuro(amount)}</td>
+                            </tr>
+                        `);
+                    });
+                });
+            });
+
+            if (allRows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-services">Noch keine Leistungen erfasst.</td></tr>';
+            } else {
+                tbody.innerHTML = allRows.join('');
+            }
+            document.getElementById('prev-total').textContent = formatEuro(total);
+        }
+
+        function val(id) {
+            return (document.getElementById(id).value || '').trim();
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function formatDate(isoDate) {
+            if (!isoDate) return '';
+            const [y, m, d] = isoDate.split('-');
+            return `${d}.${m}.${y}`;
+        }
+
+        function formatEuro(amount) {
+            return amount.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+        }
+
+        function getLastName(fullName) {
+            const parts = fullName.trim().split(/\s+/);
+            return parts[parts.length - 1];
+        }
+
+        // ====================================================
+        // Persistenz (LocalStorage)
+        // ====================================================
+        const PERSIST_FIELDS = [
+            'praxis-name', 'praxis-untertitel', 'praxis-strasse', 'praxis-plz', 'praxis-ort',
+            'praxis-tel', 'praxis-fax', 'praxis-email', 'praxis-steuer',
+            'praxis-schluss', 'praxis-signatur',
+            'bank-inhaber', 'bank-name', 'bank-iban', 'bank-bic'
+        ];
+
+        // Default-Werte (werden gesetzt, wenn das Feld nach loadPersisted leer bleibt)
+        const PRAXIS_DEFAULTS = {
+            'praxis-name': 'Mandy Mustermann',
+            'praxis-untertitel': 'Fachärztin für Allgemeinmedizin',
+            'praxis-strasse': 'Musterstraße 12',
+            'praxis-plz': '12345',
+            'praxis-ort': 'Musterstadt',
+            'praxis-schluss': 'Mit freundlichen Grüßen',
+            'praxis-signatur': 'Mandy Mustermann'
+        };
+
+        function loadPersisted() {
+            const stored = localStorage.getItem('privatrechnung-praxis');
+            if (stored) {
+                try {
+                    const data = JSON.parse(stored);
+                    PERSIST_FIELDS.forEach(f => {
+                        if (data[f] !== undefined) document.getElementById(f).value = data[f];
+                    });
+                } catch (e) {
+                    console.warn('Konnte gespeicherte Daten nicht laden', e);
+                }
+            }
+            // Leere Felder mit Default befüllen
+            Object.entries(PRAXIS_DEFAULTS).forEach(([id, val]) => {
+                const el = document.getElementById(id);
+                if (el && !el.value) el.value = val;
+            });
+        }
+
+        function saveData() {
+            const data = {};
+            PERSIST_FIELDS.forEach(f => {
+                data[f] = document.getElementById(f).value;
+            });
+            localStorage.setItem('privatrechnung-praxis', JSON.stringify(data));
+            showToast('Praxisdaten gespeichert');
+        }
+
+        // ====================================================
+        // Reset
+        // ====================================================
+        function resetAll() {
+            if (!confirm('Alle Patientendaten und Leistungen zurücksetzen? Praxis-Daten und Bankverbindung bleiben erhalten.')) return;
+            const fieldsToReset = [
+                'pat-anrede', 'pat-titel', 'pat-name', 'pat-strasse', 'pat-plz', 'pat-ort', 'pat-geburtsdatum',
+                'inv-nummer', 'inv-datum', 'inv-zahlbar', 'inv-diagnose'
+            ];
+            fieldsToReset.forEach(id => {
+                const el = document.getElementById(id);
+                if (el.tagName === 'SELECT') el.selectedIndex = 0;
+                else el.value = '';
+            });
+            days = [];
+            renderDays();
+            // Heute als Rechnungsdatum vorschlagen
+            document.getElementById('inv-datum').value = new Date().toISOString().split('T')[0];
+            renderInvoice();
+            showToast('Neue Rechnung');
+        }
+
+        // ====================================================
+        // PDF Export (über Browser-Druckdialog)
+        // ====================================================
+        function exportPDF() {
+            // Toast vor dem Druck sicher ausblenden, damit er nicht im PDF landet
+            const toastEl = document.getElementById('toast');
+            toastEl.classList.remove('show');
+
+            // Beim ersten Druck pro Sitzung Hinweis zu Browser-Kopfzeilen einblenden
+            // (NACH dem Druckdialog, damit der Toast nicht in den Print gerät)
+            if (!sessionStorage.getItem('print-hint-shown')) {
+                sessionStorage.setItem('print-hint-shown', '1');
+                window.print();
+                showToast('Tipp: „Kopf-/Fußzeilen" im Druckdialog deaktivieren');
+            } else {
+                window.print();
+            }
+        }
+
+        // ====================================================
+        // Init
+        // ====================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Laden gespeicherter Praxis-/Bankdaten
+            loadPersisted();
+
+            // Heute als Rechnungsdatum vorschlagen
+            const today = new Date().toISOString().split('T')[0];
+            if (!document.getElementById('inv-datum').value) {
+                document.getElementById('inv-datum').value = today;
+            }
+            // Zahlungsfrist: 14 Tage später
+            if (!document.getElementById('inv-zahlbar').value) {
+                const due = new Date();
+                due.setDate(due.getDate() + 14);
+                document.getElementById('inv-zahlbar').value = due.toISOString().split('T')[0];
+            }
+
+            // Eingabe-Listener auf alle Felder
+            document.querySelectorAll('input, textarea, select').forEach(el => {
+                el.addEventListener('input', renderInvoice);
+                el.addEventListener('change', renderInvoice);
+            });
+
+            // Ersten Behandlungstag anlegen
+            addDay();
+            renderInvoice();
+        });
+    </script>
+</body>
+</html>
