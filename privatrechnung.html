@@ -1221,6 +1221,63 @@
                             <input type="date" id="pat-geburtsdatum">
                         </div>
                     </div>
+
+                    <!-- Abweichender Rechnungsempfänger -->
+                    <div class="form-row alt-recipient-toggle">
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:500;">
+                            <input type="checkbox" id="use-alt-recipient" onchange="toggleAltRecipient()" style="width:auto; margin:0;">
+                            <span>Abweichender Rechnungsempfänger</span>
+                        </label>
+                        <div style="font-size:12px; color:var(--color-text-light); margin-top:4px; padding-left:24px;">
+                            Z. B. Eltern, Betreuer, Pflegeheim, Versicherung – Patient bleibt im Behandlungstext sichtbar.
+                        </div>
+                    </div>
+
+                    <div id="alt-recipient-fields" style="display:none;">
+                        <div class="form-row">
+                            <div>
+                                <label>Anrede</label>
+                                <select id="alt-anrede">
+                                    <option value="Herrn">Herrn</option>
+                                    <option value="Frau">Frau</option>
+                                    <option value="Firma">Firma</option>
+                                    <option value="">– keine –</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row two-cols">
+                            <div>
+                                <label>Titel</label>
+                                <input type="text" id="alt-titel" placeholder="z. B. Dr.">
+                            </div>
+                            <div>
+                                <label>Name / Firma</label>
+                                <input type="text" id="alt-name" placeholder="z. B. Erika Mustermann">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div>
+                                <label>Adresszusatz (optional)</label>
+                                <input type="text" id="alt-zusatz" placeholder="z. B. c/o Firma XY">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div>
+                                <label>Straße und Hausnummer</label>
+                                <input type="text" id="alt-strasse" placeholder="Musterstraße 1">
+                            </div>
+                        </div>
+                        <div class="form-row two-cols">
+                            <div>
+                                <label>PLZ</label>
+                                <input type="text" id="alt-plz" placeholder="97070">
+                            </div>
+                            <div>
+                                <label>Ort</label>
+                                <input type="text" id="alt-ort" placeholder="Würzburg">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1276,6 +1333,7 @@
             <button class="btn-secondary" onclick="resetAll()">Neu</button>
             <button class="btn-secondary" onclick="saveData()">Speichern</button>
             <button class="btn-primary" onclick="exportPDF()" title="Tipp: Im Druckdialog unter „Weitere Einstellungen" die Option „Kopf- und Fußzeilen" deaktivieren, damit Datum und Dateipfad nicht auf der Rechnung erscheinen.">PDF exportieren</button>
+            <button class="btn-secondary" onclick="exportDOC()" title="Lädt eine .doc-Datei herunter, die in Word oder LibreOffice geöffnet und dort weiterbearbeitet bzw. als .docx oder .odt gespeichert werden kann.">Word/.doc exportieren</button>
         </div>
 
         <!-- =========================================
@@ -1315,6 +1373,10 @@
                         <div class="invoice-meta-row">
                             <span class="label">Rechnungsdatum</span>
                             <span class="value" id="prev-datum">–</span>
+                        </div>
+                        <div class="invoice-meta-row" id="prev-patient-row" style="display:none;">
+                            <span class="label">Patient/in</span>
+                            <span class="value" id="prev-patient">–</span>
                         </div>
                         <div class="invoice-meta-row" id="prev-geburt-row" style="display:none;">
                             <span class="label">geb. am</span>
@@ -2268,21 +2330,42 @@
             document.getElementById('prev-closing').textContent = val('praxis-schluss') || 'Mit freundlichen Grüßen';
             document.getElementById('prev-signature').textContent = val('praxis-signatur') || docName;
 
-            // Empfänger-Adressblock
-            const anrede = val('pat-anrede');
-            const titel = val('pat-titel');
-            const name = val('pat-name');
-            const strasse = val('pat-strasse');
-            const plz = val('pat-plz');
-            const ort = val('pat-ort');
+            // Patient-Daten (immer relevant für Behandlungstext / Geburtsdatum)
+            const patAnrede = val('pat-anrede');
+            const patTitel = val('pat-titel');
+            const patName = val('pat-name');
+            const patStrasse = val('pat-strasse');
+            const patPlz = val('pat-plz');
+            const patOrt = val('pat-ort');
             const geburt = val('pat-geburtsdatum');
 
+            // Abweichender Rechnungsempfänger?
+            const altActive = document.getElementById('use-alt-recipient').checked;
+            const altAnrede = val('alt-anrede');
+            const altTitel = val('alt-titel');
+            const altName = val('alt-name');
+            const altZusatz = val('alt-zusatz');
+            const altStrasse = val('alt-strasse');
+            const altPlz = val('alt-plz');
+            const altOrt = val('alt-ort');
+
+            // Welche Daten gehen in den Adressblock + Anrede-Zeile?
+            const useAlt = altActive && (altName || altStrasse || altOrt);
+            const recAnrede = useAlt ? altAnrede : patAnrede;
+            const recTitel = useAlt ? altTitel : patTitel;
+            const recName = useAlt ? altName : patName;
+            const recStrasse = useAlt ? altStrasse : patStrasse;
+            const recPlz = useAlt ? altPlz : patPlz;
+            const recOrt = useAlt ? altOrt : patOrt;
+
+            // Empfänger-Adressblock zusammenbauen
             const adresseLines = [];
-            if (anrede) adresseLines.push(anrede);
-            const titelName = [titel, name].filter(Boolean).join(' ').trim();
+            if (recAnrede) adresseLines.push(recAnrede);
+            const titelName = [recTitel, recName].filter(Boolean).join(' ').trim();
             if (titelName) adresseLines.push(titelName);
-            if (strasse) adresseLines.push(strasse);
-            const plzOrt = [plz, ort].filter(Boolean).join(' ').trim();
+            if (useAlt && altZusatz) adresseLines.push(altZusatz);
+            if (recStrasse) adresseLines.push(recStrasse);
+            const plzOrt = [recPlz, recOrt].filter(Boolean).join(' ').trim();
             if (plzOrt) adresseLines.push(plzOrt);
 
             const recipient = document.getElementById('prev-recipient');
@@ -2292,15 +2375,25 @@
                 recipient.innerHTML = adresseLines.map(l => `<div>${escapeHtml(l)}</div>`).join('');
             }
 
-            // Anrede-Zeile
+            // Anrede-Zeile (an den Rechnungsempfänger)
             let salutation = 'Sehr geehrte Damen und Herren,';
-            if (name) {
-                if (anrede === 'Herrn') salutation = `Sehr geehrter Herr ${titel ? titel + ' ' : ''}${getLastName(name)},`;
-                else if (anrede === 'Frau') salutation = `Sehr geehrte Frau ${titel ? titel + ' ' : ''}${getLastName(name)},`;
+            if (recName) {
+                if (recAnrede === 'Herrn') salutation = `Sehr geehrter Herr ${recTitel ? recTitel + ' ' : ''}${getLastName(recName)},`;
+                else if (recAnrede === 'Frau') salutation = `Sehr geehrte Frau ${recTitel ? recTitel + ' ' : ''}${getLastName(recName)},`;
             }
             document.getElementById('prev-anrede').textContent = salutation;
 
-            // Geburtsdatum
+            // Patient-Zeile in Meta (nur bei abweichendem Empfänger)
+            const patientRow = document.getElementById('prev-patient-row');
+            if (useAlt && patName) {
+                patientRow.style.display = 'grid';
+                document.getElementById('prev-patient').textContent =
+                    [patTitel, patName].filter(Boolean).join(' ').trim();
+            } else {
+                patientRow.style.display = 'none';
+            }
+
+            // Geburtsdatum (Patient)
             if (geburt) {
                 document.getElementById('prev-geburt-row').style.display = 'grid';
                 document.getElementById('prev-geburt').textContent = formatDate(geburt);
@@ -2510,19 +2603,36 @@
         }
 
         // ====================================================
+        // Abweichender Rechnungsempfänger – Felder ein-/ausblenden
+        // ====================================================
+        function toggleAltRecipient() {
+            const checked = document.getElementById('use-alt-recipient').checked;
+            document.getElementById('alt-recipient-fields').style.display = checked ? '' : 'none';
+            renderInvoice();
+        }
+
+        // ====================================================
         // Reset
         // ====================================================
         function resetAll() {
             if (!confirm('Alle Patientendaten und Leistungen zurücksetzen? Praxis-Daten und Bankverbindung bleiben erhalten.')) return;
             const fieldsToReset = [
                 'pat-anrede', 'pat-titel', 'pat-name', 'pat-strasse', 'pat-plz', 'pat-ort', 'pat-geburtsdatum',
+                'alt-anrede', 'alt-titel', 'alt-name', 'alt-zusatz', 'alt-strasse', 'alt-plz', 'alt-ort',
                 'inv-nummer', 'inv-datum', 'inv-zahlbar', 'inv-diagnose'
             ];
             fieldsToReset.forEach(id => {
                 const el = document.getElementById(id);
+                if (!el) return;
                 if (el.tagName === 'SELECT') el.selectedIndex = 0;
                 else el.value = '';
             });
+            // Abweichender Empfänger: Checkbox aus, Felder ausblenden
+            const altCb = document.getElementById('use-alt-recipient');
+            if (altCb) {
+                altCb.checked = false;
+                document.getElementById('alt-recipient-fields').style.display = 'none';
+            }
             days = [];
             renderDays();
             // Heute als Rechnungsdatum vorschlagen
@@ -2548,6 +2658,85 @@
             } else {
                 window.print();
             }
+        }
+
+        // ====================================================
+        // Word/.doc Export (Word-kompatibles HTML als .doc)
+        // ====================================================
+        // Word und LibreOffice öffnen die Datei nahtlos, Layout/Tabelle/Schriften
+        // bleiben erhalten. Aus Word kann der Anwender bei Bedarf "Speichern unter
+        // .docx" oder "Speichern unter .odt" wählen.
+        function exportDOC() {
+            // Alle <style>-Inhalte aus dem Dokument einsammeln
+            const styleTags = document.querySelectorAll('style');
+            const styles = Array.from(styleTags).map(s => s.textContent).join('\n');
+
+            // Nur die Rechnungs-Section exportieren. Wir klonen das Element,
+            // damit wir UI-spezifische Hinweise (z.B. die Konflikt-Warnung mit
+            // Inline-Style display:block) sauber entfernen können – Word und
+            // LibreOffice respektieren `!important` aus dem Stylesheet nicht
+            // zuverlässig, deshalb das Element komplett rausnehmen.
+            const invoiceClone = document.getElementById('invoice').cloneNode(true);
+            const warnInClone = invoiceClone.querySelector('#prev-conflicts, .invoice-warning');
+            if (warnInClone) warnInClone.remove();
+            const invoiceHtml = invoiceClone.outerHTML;
+
+            // Word-kompatibles HTML mit Office-Namespaces und A4-Seitenrändern
+            const html = '<!DOCTYPE html>\n'
+                + '<html xmlns:o="urn:schemas-microsoft-com:office:office" '
+                + 'xmlns:w="urn:schemas-microsoft-com:office:word" '
+                + 'xmlns="http://www.w3.org/TR/REC-html40">\n'
+                + '<head>\n'
+                + '<meta charset="utf-8">\n'
+                + '<title>Privatrechnung</title>\n'
+                + '<!--[if gte mso 9]>\n'
+                + '<xml>\n'
+                + '  <w:WordDocument>\n'
+                + '    <w:View>Print</w:View>\n'
+                + '    <w:Zoom>100</w:Zoom>\n'
+                + '    <w:DoNotOptimizeForBrowser/>\n'
+                + '  </w:WordDocument>\n'
+                + '</xml>\n'
+                + '<![endif]-->\n'
+                + '<style>\n'
+                + styles + '\n'
+                + '/* Word-spezifische Overrides */\n'
+                + 'body { background: #fff !important; }\n'
+                + '.sidebar, .action-bar, .invoice-warning, .app-footer, .modal-overlay, .toast { display: none !important; }\n'
+                + '.app, .preview-wrapper { display: block !important; padding: 0 !important; max-height: none !important; overflow: visible !important; background: #fff !important; }\n'
+                + '@page WordSection1 { size: 21cm 29.7cm; margin: 1.5cm 1.5cm 1.5cm 1.5cm; }\n'
+                + 'div.WordSection1 { page: WordSection1; }\n'
+                + '</style>\n'
+                + '</head>\n'
+                + '<body>\n'
+                + '<div class="WordSection1">\n'
+                + invoiceHtml + '\n'
+                + '</div>\n'
+                + '</body>\n'
+                + '</html>';
+
+            // BOM + MIME application/msword → Word/LibreOffice erkennen die Datei
+            const blob = new Blob(['﻿', html], { type: 'application/msword' });
+
+            // Dateinamen aus Rechnungsnummer + Datum ableiten (sicherer Slug)
+            const invNum = (document.getElementById('inv-nummer').value || '').trim();
+            const invDate = (document.getElementById('inv-datum').value || '').trim();
+            const safeNum = invNum.replace(/[^a-zA-Z0-9_-]/g, '_').replace(/_+/g, '_');
+            let filename = 'Privatrechnung';
+            if (safeNum) filename += '_' + safeNum;
+            if (invDate) filename += '_' + invDate;
+            filename += '.doc';
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+            showToast('Word-Datei „' + filename + '" wurde heruntergeladen');
         }
 
         // ====================================================
