@@ -1707,6 +1707,7 @@
             { code: '8',  desc: 'Untersuchung zur Erhebung des Ganzkörperstatus (Haut, sichtbare Schleimhäute, Brust- und Bauchorgane, Stütz-/Bewegungsorgane, orientierende neurologische Untersuchung) – ggf. einschließlich Dokumentation',
               baseAmount: 15.15, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
             { code: '15', desc: 'Einleitung und Koordination flankierender therapeutischer und sozialer Maßnahmen während der kontinuierlichen ambulanten Betreuung eines chronisch Kranken (einmal pro Kalenderjahr)',
+              printDesc: 'Einleitung und Koordination flankierender therapeutischer und sozialer Maßnahmen während der kontinuierlichen ambulanten Betreuung eines chronisch Kranken',
               baseAmount: 17.49, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
             { code: '34', desc: 'Erörterung (mindestens 20 Min.) der Auswirkungen einer nachhaltig lebensverändernden oder lebensbedrohenden Erkrankung auf die Lebensgestaltung – ggf. einschließlich Anleitung zur Krankheitsverarbeitung oder zur Verhaltensänderung',
               baseAmount: 17.49, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
@@ -1725,10 +1726,13 @@
 
             // Leichenschau (seit 5. GOÄ-Änderungsverordnung 01.01.2020 – Festbeträge, keine Steigerung zulässig)
             { code: '100', desc: 'Vorläufige Leichenschau – Untersuchung eines Toten und Ausstellung einer vorläufigen Todesbescheinigung gemäß landesrechtl. Bestimmungen, ggf. einschl. Aktenstudium und Auskünfte (Mindestdauer 20 Min.; bei 10–20 Min. nur 60 %).',
+              printDesc: 'Untersuchung eines Toten und Ausstellung einer vorläufigen Todesbescheinigung gemäß landesrechtlichen Bestimmungen, einschließlich Aktenstudium und Einholung von Auskünften – vorläufige Leichenschau (Mindestdauer 20 Minuten)',
               baseAmount: 110.51, defaultFactor: 1.0, factorOptions: [1.0], group: 'Leichenschau' },
             { code: '101', desc: 'Eingehende Leichenschau – differenzierte Beurteilung von Todesursache und -art und/oder endgültige Todesbescheinigung, einschl. Aktenstudium und Auskünfte (Mindestdauer 40 Min.; bei 20–40 Min. nur 60 %).',
+              printDesc: 'Eingehende Untersuchung eines Toten zur differenzierten Beurteilung von Todesursache und Todesart und/oder Ausstellung einer endgültigen Todesbescheinigung gemäß landesrechtlichen Bestimmungen, einschließlich Aktenstudium und Einholung von Auskünften (Mindestdauer 40 Minuten)',
               baseAmount: 165.77, defaultFactor: 1.0, factorOptions: [1.0], group: 'Leichenschau' },
             { code: '102', desc: 'Zuschlag zu Nr. 100 oder 101 bei einer Leiche mit dem Arzt unbekannter Identität und/oder besonderen Todesumständen (zusätzliche Dauer mindestens 10 Min.).',
+              printDesc: 'Zuschlag zu den Leistungen nach den Nummern 100 oder 101 bei einer Leiche mit dem Arzt unbekannter Identität und/oder besonderen Todesumständen (zusätzliche Dauer mindestens 10 Minuten)',
               baseAmount: 27.63, defaultFactor: 1.0, factorOptions: [1.0], group: 'Leichenschau' },
 
             // Apparative / Sachleistungen (Faktor 1,8)
@@ -1739,22 +1743,30 @@
 
             // Zuschläge A–D zu Beratung/Untersuchung (Nrn. 1, 3, 4, 5, 6, 7, 8) – Faktor immer 1,0
             { code: 'A', desc: 'Zuschlag A – außerhalb der Sprechstunde erbrachte Leistungen (zu Nrn. 1, 3, 4, 5–8). Schließt B, C, D aus.',
+              printDesc: 'Zuschlag bei außerhalb der Sprechstunde erbrachten Leistungen',
               baseAmount: 4.08,  defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
             { code: 'B', desc: 'Zuschlag B – Leistungen zwischen 20–22 Uhr und 6–8 Uhr außerhalb der Sprechstunde (zu Nrn. 1, 3, 4, 5–8)',
+              printDesc: 'Zuschlag bei Leistungen zwischen 20 und 22 Uhr und zwischen 6 und 8 Uhr außerhalb der Sprechstunde',
               baseAmount: 10.49, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
             { code: 'C', desc: 'Zuschlag C – Leistungen zwischen 22 und 6 Uhr (Nacht; zu Nrn. 1, 3, 4, 5–8). Schließt B aus.',
+              printDesc: 'Zuschlag bei in der Zeit zwischen 22 und 6 Uhr erbrachten Leistungen',
               baseAmount: 18.65, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
             { code: 'D', desc: 'Zuschlag D – Leistungen an Sa, So, Feiertag (zu Nrn. 1, 3, 4, 5–8). Mit B oder C kombinierbar.',
+              printDesc: 'Zuschlag bei an Samstagen, Sonn- oder Feiertagen erbrachten Leistungen',
               baseAmount: 12.82, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
 
             // Zuschläge E–H zu Visiten/Besuchen und Leichenschau (Nrn. 45–62, 100, 101) – Faktor immer 1,0
             { code: 'E', desc: 'Zuschlag E – dringend angeforderter und unverzüglich erbrachter Besuch (zu Nrn. 45–62, 100, 101). Schließt F, G, H aus.',
+              printDesc: 'Zuschlag bei dringend angeforderter und unverzüglich erbrachter Besuchsleistung',
               baseAmount: 9.33,  defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
             { code: 'F', desc: 'Zuschlag F – Besuch zwischen 20–22 Uhr und 6–8 Uhr (zu Nrn. 45–62, 100, 101)',
+              printDesc: 'Zuschlag bei Besuchsleistung zwischen 20 und 22 Uhr und zwischen 6 und 8 Uhr',
               baseAmount: 15.15, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
             { code: 'G', desc: 'Zuschlag G – Besuch zwischen 22 und 6 Uhr (Nacht; zu Nrn. 45–62, 100, 101). Schließt F aus.',
+              printDesc: 'Zuschlag bei in der Zeit zwischen 22 und 6 Uhr erbrachter Besuchsleistung',
               baseAmount: 26.23, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
             { code: 'H', desc: 'Zuschlag H – Besuch an Sa, So, Feiertag (zu Nrn. 45–62, 100, 101). Mit F oder G kombinierbar.',
+              printDesc: 'Zuschlag bei an Samstagen, Sonn- oder Feiertagen erbrachter Besuchsleistung',
               baseAmount: 19.82, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
 
             // Wegegelder § 8 GOÄ – Tag (8 bis 20 Uhr)
@@ -1779,6 +1791,7 @@
 
             // Reiseentschädigung § 9 GOÄ – ab über 25 km (statt Wegegeld)
             { code: '§9-KFZ', desc: 'Reiseentschädigung § 9 – eigenes Kfz, 0,42 € je zurückgelegtem Kilometer (Anzahl km wählen)',
+              printDesc: 'Reiseentschädigung nach § 9 GOÄ – eigenes Kraftfahrzeug, 0,42 € je zurückgelegtem Kilometer',
               baseAmount: 0.42, defaultFactor: 60, factorOptions: [10, 20, 30, 40, 50, 60, 80, 100, 150, 200, 300, 500],
               factorUnit: 'km', group: 'Reiseentschädigung (§ 9 GOÄ)' },
             { code: '§9-TG8', desc: 'Reiseentschädigung § 9 – Tage- und Abwesenheitsgeld bei Abwesenheit bis zu 8 Stunden',
@@ -2396,11 +2409,13 @@
                             ? formatFactor(factor, 'km')
                             : factor.toFixed(1).replace('.', ',');
 
+                        const invoiceDesc = g.printDesc || g.desc;
+
                         allRows.push(`
                             <tr>
                                 <td class="col-date">${escapeHtml(labelToShow)}</td>
                                 <td class="col-code">${escapeHtml(g.code)}</td>
-                                <td class="col-desc">${escapeHtml(g.desc)}</td>
+                                <td class="col-desc">${escapeHtml(invoiceDesc)}</td>
                                 <td class="col-factor">${escapeHtml(factorDisplay)}</td>
                                 <td class="col-single">${formatEuro(g.baseAmount)}</td>
                                 <td class="col-amount">${formatEuro(amount)}</td>
