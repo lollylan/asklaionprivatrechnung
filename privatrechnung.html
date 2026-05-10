@@ -1696,26 +1696,26 @@
               baseAmount: 4.66,  defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
             { code: '3',  desc: 'Eingehende, das gewöhnliche Maß übersteigende Beratung – auch mittels Fernsprecher',
               baseAmount: 8.74,  defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
-            { code: '4',  desc: 'Erhebung der Fremdanamnese und/oder Unterweisung der Bezugsperson(en)',
-              baseAmount: 6.99,  defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
+            { code: '4',  desc: 'Erhebung der Fremdanamnese über einen Kranken und/oder Unterweisung und Führung der Bezugsperson(en) – im Zusammenhang mit der Behandlung eines Kranken',
+              baseAmount: 12.82, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
             { code: '5',  desc: 'Symptombezogene Untersuchung',
               baseAmount: 4.66,  defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
-            { code: '6',  desc: 'Vollständige körperliche Untersuchung mindestens eines Organsystems',
+            { code: '6',  desc: 'Vollständige körperliche Untersuchung mindestens eines der folgenden Organsysteme: Augen, HNO-Bereich, stomatognathes System, Nieren/ableitende Harnwege (bei Männern ggf. einschl. Geschlechtsorgane) oder vollständiger Gefäßstatus',
+              baseAmount: 5.83,  defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
+            { code: '7',  desc: 'Vollständige körperliche Untersuchung mindestens eines der folgenden Organsysteme: Hautorgan, Stütz-/Bewegungsorgane, Brustorgane, Bauchorgane, weiblicher Genitaltrakt (ggf. einschl. Nieren/Harnwege)',
+              baseAmount: 9.33,  defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
+            { code: '8',  desc: 'Untersuchung zur Erhebung des Ganzkörperstatus (Haut, sichtbare Schleimhäute, Brust- und Bauchorgane, Stütz-/Bewegungsorgane, orientierende neurologische Untersuchung) – ggf. einschließlich Dokumentation',
               baseAmount: 15.15, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
-            { code: '7',  desc: 'Vollständige körperliche Untersuchung mehrerer Organsysteme oder eines umschriebenen Krankheitsherdes',
+            { code: '15', desc: 'Einleitung und Koordination flankierender therapeutischer und sozialer Maßnahmen während der kontinuierlichen ambulanten Betreuung eines chronisch Kranken (einmal pro Kalenderjahr)',
               baseAmount: 17.49, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
-            { code: '8',  desc: 'Untersuchung zur Erhebung des Ganzkörperstatus mit Erstellung eines schriftlichen Behandlungsplans',
-              baseAmount: 13.99, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
-            { code: '15', desc: 'Einleitung und Koordination flankierender therapeutischer und sozialer Maßnahmen während der ambulanten Behandlung',
-              baseAmount: 10.72, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
             { code: '34', desc: 'Erörterung (mindestens 20 Min.) der Auswirkungen einer nachhaltig lebensverändernden oder lebensbedrohenden Erkrankung auf die Lebensgestaltung – ggf. einschließlich Anleitung zur Krankheitsverarbeitung oder zur Verhaltensänderung',
               baseAmount: 17.49, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Beratung & Untersuchung' },
 
             // Besuche
-            { code: '50', desc: 'Besuch einschließlich Beratung und symptombezogener Untersuchung',
-              baseAmount: 15.15, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Besuche' },
-            { code: '51', desc: 'Besuch eines weiteren Kranken in derselben häuslichen Gemeinschaft / demselben Pflegeheim',
-              baseAmount: 8.74,  defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Besuche' },
+            { code: '50', desc: 'Besuch, einschließlich Beratung und symptombezogener Untersuchung',
+              baseAmount: 18.65, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Besuche' },
+            { code: '51', desc: 'Besuch eines weiteren Kranken in derselben häuslichen Gemeinschaft in unmittelbarem zeitlichen Zusammenhang mit der Leistung nach Nummer 50',
+              baseAmount: 14.57, defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Besuche' },
 
             // Berichte
             { code: '70', desc: 'Kurze Bescheinigung oder kurzes Zeugnis, kurzer Befundbericht',
@@ -1723,31 +1723,68 @@
             { code: '75', desc: 'Ausführlicher schriftlicher Krankheits- und Befundbericht',
               baseAmount: 7.58,  defaultFactor: 2.3, factorOptions: [1.0, 1.8, 2.3, 3.5], group: 'Berichte & Bescheinigungen' },
 
+            // Leichenschau (seit 5. GOÄ-Änderungsverordnung 01.01.2020 – Festbeträge, keine Steigerung zulässig)
+            { code: '100', desc: 'Vorläufige Leichenschau – Untersuchung eines Toten und Ausstellung einer vorläufigen Todesbescheinigung gemäß landesrechtl. Bestimmungen, ggf. einschl. Aktenstudium und Auskünfte (Mindestdauer 20 Min.; bei 10–20 Min. nur 60 %).',
+              baseAmount: 110.51, defaultFactor: 1.0, factorOptions: [1.0], group: 'Leichenschau' },
+            { code: '101', desc: 'Eingehende Leichenschau – differenzierte Beurteilung von Todesursache und -art und/oder endgültige Todesbescheinigung, einschl. Aktenstudium und Auskünfte (Mindestdauer 40 Min.; bei 20–40 Min. nur 60 %).',
+              baseAmount: 165.77, defaultFactor: 1.0, factorOptions: [1.0], group: 'Leichenschau' },
+            { code: '102', desc: 'Zuschlag zu Nr. 100 oder 101 bei einer Leiche mit dem Arzt unbekannter Identität und/oder besonderen Todesumständen (zusätzliche Dauer mindestens 10 Min.).',
+              baseAmount: 27.63, defaultFactor: 1.0, factorOptions: [1.0], group: 'Leichenschau' },
+
             // Apparative / Sachleistungen (Faktor 1,8)
-            { code: '250', desc: 'Blutentnahme mittels Kanüle, ggf. einschließlich Probenröhrchen',
-              baseAmount: 2.40,  defaultFactor: 1.8, factorOptions: [1.0, 1.3, 1.8, 2.5], group: 'Apparativ / Sachleistungen' },
-            { code: '602', desc: 'Pulsoximetrische Untersuchung(en) zur Bestimmung der Sauerstoffsättigung – ggf. einschließlich Pulsfrequenzmessung',
-              baseAmount: 6.41,  defaultFactor: 1.8, factorOptions: [1.0, 1.3, 1.8, 2.5], group: 'Apparativ / Sachleistungen' },
+            { code: '250', desc: 'Blutentnahme mittels Spritze, Kanüle oder Katheter aus der Vene',
+              baseAmount: 2.33,  defaultFactor: 1.8, factorOptions: [1.0, 1.3, 1.8, 2.5], group: 'Apparativ / Sachleistungen' },
+            { code: '602', desc: 'Oxymetrische Untersuchung(en) – Bestimmung der prozentualen Sauerstoffsättigung im Blut',
+              baseAmount: 8.86,  defaultFactor: 1.8, factorOptions: [1.0, 1.3, 1.8, 2.5], group: 'Apparativ / Sachleistungen' },
 
-            // Zuschläge (Faktor immer 1,0)
-            { code: 'A', desc: 'Zuschlag bei Aufsuchen außerhalb der Sprechstunde – Werktag (Mo–Fr 6–8 / 20–22 Uhr) sowie Sa, So, Feiertag (8–20 Uhr)',
-              baseAmount: 5.83,  defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
-            { code: 'B', desc: 'Zuschlag bei Inanspruchnahme zwischen 22 und 6 Uhr (Nacht)',
-              baseAmount: 17.49, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
-            { code: 'C', desc: 'Zuschlag bei Inanspruchnahme an Sa, So, Feiertag zwischen 6–8 Uhr und 20–22 Uhr',
-              baseAmount: 9.91,  defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
-            { code: 'D', desc: 'Zuschlag bei sofortiger Inanspruchnahme aufgrund eines Notfalls außerhalb der Sprechstunde',
-              baseAmount: 26.23, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
-            { code: 'E', desc: 'Zuschlag zu den Besuchsleistungen (Werktag 8–20 Uhr außerhalb der Sprechstunde)',
-              baseAmount: 11.66, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
-            { code: 'F', desc: 'Zuschlag zu den Besuchsleistungen bei Inanspruchnahme zwischen 22 und 6 Uhr',
-              baseAmount: 26.23, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
+            // Zuschläge A–D zu Beratung/Untersuchung (Nrn. 1, 3, 4, 5, 6, 7, 8) – Faktor immer 1,0
+            { code: 'A', desc: 'Zuschlag A – außerhalb der Sprechstunde erbrachte Leistungen (zu Nrn. 1, 3, 4, 5–8). Schließt B, C, D aus.',
+              baseAmount: 4.08,  defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
+            { code: 'B', desc: 'Zuschlag B – Leistungen zwischen 20–22 Uhr und 6–8 Uhr außerhalb der Sprechstunde (zu Nrn. 1, 3, 4, 5–8)',
+              baseAmount: 10.49, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
+            { code: 'C', desc: 'Zuschlag C – Leistungen zwischen 22 und 6 Uhr (Nacht; zu Nrn. 1, 3, 4, 5–8). Schließt B aus.',
+              baseAmount: 18.65, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
+            { code: 'D', desc: 'Zuschlag D – Leistungen an Sa, So, Feiertag (zu Nrn. 1, 3, 4, 5–8). Mit B oder C kombinierbar.',
+              baseAmount: 12.82, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
 
-            // Wegegelder
-            { code: '71', desc: 'Wegegeld bei Besuch innerhalb des Praxisortes – bis 2 km (Tag)',
-              baseAmount: 3.58,  defaultFactor: 1.0, factorOptions: [1.0], group: 'Wegegelder' },
-            { code: '72', desc: 'Wegegeld bei Besuch innerhalb des Praxisortes – mehr als 2 bis 5 km (Tag)',
-              baseAmount: 6.65,  defaultFactor: 1.0, factorOptions: [1.0], group: 'Wegegelder' }
+            // Zuschläge E–H zu Visiten/Besuchen und Leichenschau (Nrn. 45–62, 100, 101) – Faktor immer 1,0
+            { code: 'E', desc: 'Zuschlag E – dringend angeforderter und unverzüglich erbrachter Besuch (zu Nrn. 45–62, 100, 101). Schließt F, G, H aus.',
+              baseAmount: 9.33,  defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
+            { code: 'F', desc: 'Zuschlag F – Besuch zwischen 20–22 Uhr und 6–8 Uhr (zu Nrn. 45–62, 100, 101)',
+              baseAmount: 15.15, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
+            { code: 'G', desc: 'Zuschlag G – Besuch zwischen 22 und 6 Uhr (Nacht; zu Nrn. 45–62, 100, 101). Schließt F aus.',
+              baseAmount: 26.23, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
+            { code: 'H', desc: 'Zuschlag H – Besuch an Sa, So, Feiertag (zu Nrn. 45–62, 100, 101). Mit F oder G kombinierbar.',
+              baseAmount: 19.82, defaultFactor: 1.0, factorOptions: [1.0], group: 'Zuschläge' },
+
+            // Wegegelder § 8 GOÄ – Tag (8 bis 20 Uhr)
+            { code: '71',  desc: 'Wegegeld § 8 – bis 2 km (Tag, 8–20 Uhr)',
+              baseAmount: 3.58,  defaultFactor: 1.0, factorOptions: [1.0], group: 'Wegegelder (§ 8 GOÄ)' },
+            { code: '72',  desc: 'Wegegeld § 8 – mehr als 2 bis 5 km (Tag, 8–20 Uhr)',
+              baseAmount: 6.65,  defaultFactor: 1.0, factorOptions: [1.0], group: 'Wegegelder (§ 8 GOÄ)' },
+            { code: '73',  desc: 'Wegegeld § 8 – mehr als 5 bis 10 km (Tag, 8–20 Uhr)',
+              baseAmount: 10.23, defaultFactor: 1.0, factorOptions: [1.0], group: 'Wegegelder (§ 8 GOÄ)' },
+            { code: '74',  desc: 'Wegegeld § 8 – mehr als 10 bis 25 km (Tag, 8–20 Uhr)',
+              baseAmount: 15.34, defaultFactor: 1.0, factorOptions: [1.0], group: 'Wegegelder (§ 8 GOÄ)' },
+
+            // Wegegelder § 8 GOÄ – Nacht (20 bis 8 Uhr)
+            { code: '71N', desc: 'Wegegeld § 8 – bis 2 km (Nacht, 20–8 Uhr)',
+              baseAmount: 7.16,  defaultFactor: 1.0, factorOptions: [1.0], group: 'Wegegelder (§ 8 GOÄ)' },
+            { code: '72N', desc: 'Wegegeld § 8 – mehr als 2 bis 5 km (Nacht, 20–8 Uhr)',
+              baseAmount: 10.23, defaultFactor: 1.0, factorOptions: [1.0], group: 'Wegegelder (§ 8 GOÄ)' },
+            { code: '73N', desc: 'Wegegeld § 8 – mehr als 5 bis 10 km (Nacht, 20–8 Uhr)',
+              baseAmount: 15.34, defaultFactor: 1.0, factorOptions: [1.0], group: 'Wegegelder (§ 8 GOÄ)' },
+            { code: '74N', desc: 'Wegegeld § 8 – mehr als 10 bis 25 km (Nacht, 20–8 Uhr)',
+              baseAmount: 25.56, defaultFactor: 1.0, factorOptions: [1.0], group: 'Wegegelder (§ 8 GOÄ)' },
+
+            // Reiseentschädigung § 9 GOÄ – ab über 25 km (statt Wegegeld)
+            { code: '§9-KFZ', desc: 'Reiseentschädigung § 9 – eigenes Kfz, 0,42 € je zurückgelegtem Kilometer (Anzahl km wählen)',
+              baseAmount: 0.42, defaultFactor: 60, factorOptions: [10, 20, 30, 40, 50, 60, 80, 100, 150, 200, 300, 500],
+              factorUnit: 'km', group: 'Reiseentschädigung (§ 9 GOÄ)' },
+            { code: '§9-TG8', desc: 'Reiseentschädigung § 9 – Tage- und Abwesenheitsgeld bei Abwesenheit bis zu 8 Stunden',
+              baseAmount: 56.00, defaultFactor: 1.0, factorOptions: [1.0], group: 'Reiseentschädigung (§ 9 GOÄ)' },
+            { code: '§9-TG24', desc: 'Reiseentschädigung § 9 – Tage- und Abwesenheitsgeld bei Abwesenheit von mehr als 8 Stunden',
+              baseAmount: 112.00, defaultFactor: 1.0, factorOptions: [1.0], group: 'Reiseentschädigung (§ 9 GOÄ)' }
         ];
 
         // ====================================================
@@ -1771,19 +1808,29 @@
                 message: 'Nr. 50 ist der Erstbesuch, Nr. 51 nur für weitere Patienten in derselben häuslichen Gemeinschaft – beim selben Patienten am selben Tag schließen sie sich aus.'
             },
             {
-                id: 'zuschlag-beratung',
-                codes: ['A', 'B', 'C', 'D'],
-                message: 'Die Zeit-Zuschläge A, B, C und D zu Beratungen/Untersuchungen schließen sich gegenseitig aus.'
+                id: 'zuschlag-beratung-zeit',
+                codes: ['B', 'C'],
+                message: 'Zuschläge B (20–22 / 6–8 Uhr) und C (22–6 Uhr Nacht) schließen sich gegenseitig aus.'
             },
             {
-                id: 'zuschlag-besuch',
-                codes: ['E', 'F'],
-                message: 'Die Besuchs-Zuschläge E und F schließen sich gegenseitig aus.'
+                id: 'zuschlag-besuch-zeit',
+                codes: ['F', 'G'],
+                message: 'Zuschläge F (20–22 / 6–8 Uhr) und G (22–6 Uhr Nacht) schließen sich gegenseitig aus.'
+            },
+            {
+                id: 'leichenschau',
+                codes: ['100', '101'],
+                message: 'Nrn. 100 und 101 (Leichenschau) sind alternativ – pro Toten darf nur eine Ziffer angesetzt werden.'
             },
             {
                 id: 'wegegeld',
-                codes: ['71', '72'],
-                message: 'Pro Besuch kann nur ein Wegegeld (Entfernungspauschale) abgerechnet werden.'
+                codes: ['71', '72', '73', '74', '71N', '72N', '73N', '74N'],
+                message: 'Pro Besuch kann nur ein Wegegeld (Entfernungspauschale § 8 GOÄ) abgerechnet werden – Tag- und Nachtsatz schließen sich gegenseitig aus.'
+            },
+            {
+                id: 'wegegeld-vs-reise',
+                codes: ['71', '72', '73', '74', '71N', '72N', '73N', '74N', '§9-KFZ'],
+                message: 'Wegegeld (§ 8) und Reiseentschädigung (§ 9) schließen sich aus – bei Entfernungen über 25 km wird ausschließlich nach § 9 abgerechnet.'
             }
         ];
 
@@ -1799,6 +1846,45 @@
                 trigger: '51',
                 excludes: ['1', '5'],
                 message: 'Nr. 51 enthält laut Leistungslegende bereits Beratung und symptombezogene Untersuchung – Nrn. 1 und 5 sind daneben nicht zusätzlich berechenbar.'
+            },
+            {
+                trigger: 'A',
+                excludes: ['B', 'C', 'D'],
+                message: 'Zuschlag A (außerhalb Sprechstunde) schließt die spezifischeren Zuschläge B, C und D aus – pro Inanspruchnahme ist nur einer der Zuschläge A oder B/C(+D) berechenbar.'
+            },
+            {
+                trigger: 'E',
+                excludes: ['F', 'G', 'H'],
+                message: 'Zuschlag E (dringend angefordert) schließt die spezifischeren Zuschläge F, G und H aus – pro Besuch ist nur einer berechenbar.'
+            }
+        ];
+
+        // Bedingungs-Regeln: Eine Ziffer setzt eine andere voraus (Hinweis, kein harter Ausschluss)
+        const REQUIRES_RULES = [
+            {
+                code: 'E',
+                requiresAny: ['50', '51', '100', '101'],
+                message: 'Zuschlag E ist nur neben Besuchs- oder Leichenschau-Leistungen (Nr. 50, 51, 100, 101 bzw. allg. 45–62) berechenbar.'
+            },
+            {
+                code: 'F',
+                requiresAny: ['50', '51', '100', '101'],
+                message: 'Zuschlag F ist nur neben Besuchs- oder Leichenschau-Leistungen (Nr. 50, 51, 100, 101 bzw. allg. 45–62) berechenbar.'
+            },
+            {
+                code: 'G',
+                requiresAny: ['50', '51', '100', '101'],
+                message: 'Zuschlag G ist nur neben Besuchs- oder Leichenschau-Leistungen (Nr. 50, 51, 100, 101 bzw. allg. 45–62) berechenbar.'
+            },
+            {
+                code: 'H',
+                requiresAny: ['50', '51', '100', '101'],
+                message: 'Zuschlag H ist nur neben Besuchs- oder Leichenschau-Leistungen (Nr. 50, 51, 100, 101 bzw. allg. 45–62) berechenbar.'
+            },
+            {
+                code: '102',
+                requiresAny: ['100', '101'],
+                message: 'Nr. 102 ist ein Zuschlag und nur neben Nr. 100 oder 101 berechenbar.'
             }
         ];
 
@@ -1908,6 +1994,21 @@
                         });
                         conflictedHere.forEach(c => conflictedCodes.add(c));
                         conflictedCodes.add(rule.trigger);
+                    }
+                }
+            });
+
+            // 3) Voraussetzungs-Regeln (Code X erfordert mindestens eine aus Y)
+            REQUIRES_RULES.forEach(rule => {
+                if (activeCodes.includes(rule.code)) {
+                    const hasAny = rule.requiresAny.some(c => activeCodes.includes(c));
+                    if (!hasAny) {
+                        messages.push({
+                            type: 'requires',
+                            codes: [rule.code],
+                            text: rule.message + ' (Aktiv: Nr. ' + rule.code + ' ohne Bezugsziffer)'
+                        });
+                        conflictedCodes.add(rule.code);
                     }
                 }
             });
@@ -2037,7 +2138,7 @@
                             const isConflicted = isChecked && conflictedCodes.has(g.code);
                             const currentFactor = isChecked ? session.services[g.code].factor : g.defaultFactor;
                             const factorOpts = g.factorOptions.map(f =>
-                                `<option value="${f}" ${f === currentFactor ? 'selected' : ''}>${formatFactor(f)}</option>`
+                                `<option value="${f}" ${f === currentFactor ? 'selected' : ''}>${formatFactor(f, g.factorUnit)}</option>`
                             ).join('');
                             const rowClasses = ['code-row'];
                             if (isChecked) rowClasses.push('checked');
@@ -2110,7 +2211,12 @@
             return str.length > n ? str.substring(0, n - 1) + '…' : str;
         }
 
-        function formatFactor(f) {
+        function formatFactor(f, unit) {
+            if (unit === 'km') {
+                // Ganzzahlige km bevorzugt; nur bei Bedarf Nachkommastellen
+                const isInt = Math.abs(f - Math.round(f)) < 1e-9;
+                return (isInt ? f.toFixed(0) : f.toFixed(1).replace('.', ',')) + ' km';
+            }
             return f.toFixed(1).replace('.', ',') + '-fach';
         }
 
@@ -2286,12 +2392,16 @@
                         const labelToShow = showLabel ? sessionLabel : '';
                         if (showLabel) lastSessionLabel = sessionLabel;
 
+                        const factorDisplay = g.factorUnit === 'km'
+                            ? formatFactor(factor, 'km')
+                            : factor.toFixed(1).replace('.', ',');
+
                         allRows.push(`
                             <tr>
                                 <td class="col-date">${escapeHtml(labelToShow)}</td>
-                                <td class="col-code">${g.code}</td>
+                                <td class="col-code">${escapeHtml(g.code)}</td>
                                 <td class="col-desc">${escapeHtml(g.desc)}</td>
-                                <td class="col-factor">${factor.toFixed(1).replace('.', ',')}</td>
+                                <td class="col-factor">${escapeHtml(factorDisplay)}</td>
                                 <td class="col-single">${formatEuro(g.baseAmount)}</td>
                                 <td class="col-amount">${formatEuro(amount)}</td>
                             </tr>
