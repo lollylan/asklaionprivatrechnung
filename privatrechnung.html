@@ -551,12 +551,21 @@
             line-height: 1.3;
         }
 
-        .services-table .col-date { width: 28mm; white-space: nowrap; font-variant-numeric: tabular-nums; }
-        .services-table .col-code { width: 14mm; font-family: 'JetBrains Mono', monospace; font-weight: 600; }
-        .services-table .col-desc { font-family: var(--font-serif); font-size: 10pt; }
-        .services-table .col-factor { width: 14mm; text-align: right; font-family: 'JetBrains Mono', monospace; }
-        .services-table .col-single { width: 22mm; text-align: right; font-family: 'JetBrains Mono', monospace; }
-        .services-table .col-amount { width: 24mm; text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+        /* Spaltenbreiten + Ausrichtung gelten fuer thead und tbody */
+        .services-table .col-date   { width: 28mm; white-space: nowrap; }
+        .services-table .col-code   { width: 14mm; }
+        .services-table .col-factor { width: 14mm; text-align: right; }
+        .services-table .col-single { width: 22mm; text-align: right; }
+        .services-table .col-amount { width: 24mm; text-align: right; }
+
+        /* Schrift-/Stilangaben nur im Datenbereich, damit die Spaltenkoepfe
+           einheitlich (sans, 9pt, uppercase) bleiben */
+        .services-table tbody td.col-date   { font-variant-numeric: tabular-nums; }
+        .services-table tbody td.col-code   { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+        .services-table tbody td.col-desc   { font-family: var(--font-serif); line-height: 1.25; }
+        .services-table tbody td.col-factor { font-family: 'JetBrains Mono', monospace; }
+        .services-table tbody td.col-single { font-family: 'JetBrains Mono', monospace; }
+        .services-table tbody td.col-amount { font-family: 'JetBrains Mono', monospace; font-weight: 500; }
 
         .services-table tfoot td {
             padding: 10px 6px;
